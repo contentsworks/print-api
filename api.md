@@ -182,8 +182,8 @@ HTTP ステータスコードとともに結果を返します。
                 "images": [
                     {
                         "areaID": "JACKET",
-                        "minWidth": 82800,
-                        "minHeight": 62100
+                        "minWidth": 828,
+                        "minHeight": 621
                     }
                 ],
                 "texts": [
@@ -214,8 +214,8 @@ HTTP ステータスコードとともに結果を返します。
                 "images": [
                     {
                         "areaID": "PHOTO",
-                        "minWidth": 82800,
-                        "minHeight": 62100
+                        "minWidth": 828,
+                        "minHeight": 621
                     },...
                 ],
                 "texts": [
