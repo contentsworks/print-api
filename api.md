@@ -25,7 +25,7 @@ client_idとclient_secretの取得には、Developersへのご利用登録と利
 ### 認可とアクセストークンの入手
 クライアントプログラムは、事前に発行されたclient_id、client_secretを利用してアクセストークンを入手します。
 #### ***Method*** : POST
-#### ***Url*** : /token
+#### ***Url*** : /oauth2/token
 #### ***Request Header***
 Authorization:に「"Basic " + base64encode(client_id + ":" + client_secret)」を設定します。
 ```
@@ -172,44 +172,58 @@ HTTP ステータスコードとともに結果を返します。
 
 ```
 {
-    "itemSpecifics": {
-        "totalImageCount": 16,
+    "itemSpecific": {
+        "totalImageCount": 13,
         "pages": [
             {
-                "pageNo": 0,
+                "page": 0,
                 "pageType": "Jacket",
                 "templateType": "Spread",
                 "images": [
                     {
-                        "areaID": "PHOTO01",
-                        "minWidth": 116,
-                        "minHeight": 116
-                    },...
+                        "areaID": "JACKET",
+                        "minWidth": 82800,
+                        "minHeight": 62100
+                    }
                 ],
                 "texts": [
                     {
-                        "areaID": "TITLE",
+                        "areaID": "TITLE.AUTHOR",
                         "maxLength": 20,
-                        "maxLine": 1
-                    },...
+                        "maxLineLength": 20,
+                        "maxLineCount": 1
+                    },
+                    {
+                        "areaID": "TITLE.SUBTITLE",
+                        "maxLength": 40,
+                        "maxLineLength": 40,
+                        "maxLineCount": 1
+                    },
+                    {
+                        "areaID": "TITLE.TITLE",
+                        "maxLength": 20,
+                        "maxLineLength": 20,
+                        "maxLineCount": 1
+                    }
                 ]
             },
             {
                 "pageNo": 1,
-                "pageType": "body",
+                "pageType": "Body",
                 "templateType": "Right",
                 "images": [
                     {
-                        "areaID": "PHOTO01",
-                        "minWidth": 116,
-                        "minHeight": 116
+                        "areaID": "PHOTO",
+                        "minWidth": 82800,
+                        "minHeight": 62100
                     },...
                 ],
                 "texts": [
                     {
-                        "areaID": "TEXT01",
-                        "maxLength": 20,
-                        "maxLine": 3
+                        "areaID": "TEXT.DEFAULT",
+                        "maxLength": 984,
+                        "maxLineLength": 41,
+                        "maxLineCount": 24
                     },...
                 ]
             },...
@@ -244,14 +258,14 @@ HTTP ステータスコードとともに結果を返します。
 ---
 ## 作品作成開始 作品キー取得 API
 ### ***Method*** : POST
-### ***Url*** : /items/{item-code}
+### ***Url*** : /items/{itemCode}
 ### ***Request***
 * itemCode : アイテムの種類を指定します。弊社にて発行したコードを指定してください。
 
 ### ***Response***
 ```
 {
-    "editKey": "A18566263AB96699393",
+    "editKey": "3800604642207821313",
     "expireDate": "2016/1/1"
 }
 ```
@@ -278,7 +292,7 @@ HTTP ステータスコードとともに結果を返します。
 {
     "texts": [
         {
-            "areaID": "TEXT01",
+            "areaID": "TEXT01.DEFAULT",
             "value": "おしゃれな仕上がりと美しいレイアウトが評判のフォトブック作成サービスです。"
         }
     ],...
@@ -332,7 +346,7 @@ HTTP ステータスコードとともに結果を返します。
 {
     "texts": [
         {
-            "areaID": "TEXT01",
+            "areaID": "TEXT01.DEFAULT",
             "value": "おしゃれな仕上がりと美しいレイアウトが評判のフォトブック作成サービスです。"
         }
     ],...
@@ -481,13 +495,12 @@ HTTP ステータスコードとともに結果を返します。
 {
     "items" : [
         {
-            "editKey": "A18566263AB96699393",
+            "editKey": "3800604642207821313",
             "copy": 10
         },...
     ],
     "delivery" : 
     {
-        "editKey" : "A18566263AB96699393",
         "familyName" : "紺天",
         "firstName" : "津太郎",
         "zipCode" : "101-0051",
@@ -506,7 +519,6 @@ HTTP ステータスコードとともに結果を返します。
 ※ 一回の注文での最大冊数は、100冊までです。
 
 * delivery
-    * editKey [string] : 作品キー取得 APIにて発行したキーを指定してください。
     * familyName [string (50)] : お届け先のお名前（姓）。
     * firstName [string (100)] : お届け先のお名前（名）。
     * zipCode [string (8)] : お届け先の郵便番号(ハイフンなしでもOK)。
@@ -527,7 +539,7 @@ HTTP ステータスコードとともに結果を返します。
 ```
 【成功時の例】
 {
-    "orderNo": "OAPI-123456",
+    "orderNo": "OPPF-90123456",
 }
 ```
 * orderNo [string] : 注文を識別する一意の番号
@@ -564,12 +576,12 @@ HTTP ステータスコードとともに結果を返します。
 {
     "orders": [
         {
-            "orderNo" : "oapi-00000001",
+            "orderNo" : "OPPF-90123456",
             "orderDateTime" : "2017/1/1 00:00:00",
-            "status" : 1,
+            "status" : 2,
             "items" : [
                 {
-                    editKey : "A18566263AB96699393",
+                    editKey : "3800604642207821313",
                     title : "写真日記",
                     Copy : 10,
                 },...
@@ -613,7 +625,6 @@ HTTP ステータスコードとともに結果を返します。
         * company(任意) [string] : お届け先の会社名。
         * telephone [string] : お届け先の電話番号(ハイフンなしでもOK)。
         * shipDueDate [date] : 出荷予定日(注文すテータスが、2:注文確定, 4:出荷済の場合のみに返します)
-        * shipDate [date] : 出荷予定日(注文すテータスが、4:出荷済の場合のみに返します)
 
 
 ※ 注文受付から24時間以内には、注文確定となり出荷予定日が決まります。
