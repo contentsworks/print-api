@@ -163,7 +163,7 @@ HTTP ステータスコードとともに結果を返します。
 ---
 ## 商品情報取得 API
 ### ***Method*** : GET
-### ***Url*** : /item-specifics/{itemCode}
+### ***Url*** : /v1/item-specifics/{itemCode}
 ### ***Request***
 
 * itemCode : アイテムの種類を指定します。弊社にて発行したコードを指定してください。
@@ -258,7 +258,7 @@ HTTP ステータスコードとともに結果を返します。
 ---
 ## 作品作成開始 作品キー取得 API
 ### ***Method*** : POST
-### ***Url*** : /items/{itemCode}
+### ***Url*** : /v1/items/{itemCode}
 ### ***Request***
 * itemCode : アイテムの種類を指定します。弊社にて発行したコードを指定してください。
 
@@ -283,7 +283,7 @@ HTTP ステータスコードとともに結果を返します。
 ## テキスト登録/更新 API
 ### ***Method*** : POST
 ### ***Header*** : X-HTTP-Method-Override=PUT
-### ***Url*** : /{editKey}/texts/{pageNo}/
+### ***Url*** : /v1/{editKey}/texts/{pageNo}/
 ### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 * pageNo : ページ番号を指定してください。
@@ -333,7 +333,7 @@ HTTP ステータスコードとともに結果を返します。
 ---
 ## テキスト取得 API
 ### ***Method*** : GET
-### ***Url*** : /{editKey}/texts/{pageNo}/{areaID}
+### ***Url*** : /v1/{editKey}/texts/{pageNo}/{areaID}
 ### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 * pageNo : ページ番号を指定してください。
@@ -364,7 +364,7 @@ HTTP ステータスコードとともに結果を返します。
 ## 画像アップロード/更新 API
 ### ***Method*** : POST
 ### ***Header*** : X-HTTP-Method-Override=PUT
-### ***Url*** : /{editKey}/images/{page}/{areaID}
+### ***Url*** : /v1/{editKey}/images/{page}/{areaID}
 ### ***Request Body***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 * pageNo : ページ番号を指定してください。
@@ -402,7 +402,7 @@ HTTP ステータスコードとともに結果を返します。
 ## 画像アップロード取消 API
 ### ***Method*** : POST
 ### ***Header*** : X-HTTP-Method-Override=DELETE
-### ***Url*** : /{editKey}/images/{page}/{areaID}
+### ***Url*** : /v1/{editKey}/images/{page}/{areaID}
 ### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 * pageNo : ページ番号を指定してください。
@@ -432,7 +432,7 @@ HTTP ステータスコードとともに結果を返します。
 ---
 ## アップロード画像取得 API
 ### ***Method*** : GET
-### ***Url*** : /{editKey}/images/{page}/{areaID}
+### ***Url*** : /v1/{editKey}/images/{page}/{areaID}
 ### ***QueryString***
 * h : 横幅を指定してください。
 * w : 高さを指定してください。
@@ -467,7 +467,7 @@ HTTP ステータスコードとともに結果を返します。
 ---
 ## プレビュー取得 API
 ### ***Method*** : GET
-### ***Url*** : /{editKey}/previews/{page}
+### ***Url*** : /v1/{editKey}/previews/{page}
 ### ***QueryString*** : ?h={height}&w={width}
 * h  : 横幅を指定してください。
 * w  : 高さを指定してください。
@@ -488,7 +488,7 @@ HTTP ステータスコードとともに結果を返します。
 ---
 ## 注文確定 API
 ### ***Method*** : POST
-### ***Url*** : /orders/
+### ***Url*** : /v1/orders/
 ### ***Request***
 
 ```
@@ -560,7 +560,7 @@ HTTP ステータスコードとともに結果を返します。
 ---
 ## 注文情報の取得 API
 ### ***Method*** : GET
-### ***Url*** : /orders/{orderNo}
+### ***Url*** : /v1/orders/{orderNo}
 ### ***Request***
 
 * orderNo(任意) : orderNoを指定した場合は、指定した注文のみが取得できます。
