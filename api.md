@@ -312,15 +312,16 @@ HTTP ステータスコードとともに結果を返します。
 |406 (NOT ACCEPTABLE)|指定されたeditKeyが存在しない|notacceptable_editkey|
 |404 (NOT FOUND)|存在しないページが指定されました。|notfound_page|
 |404 (NOT FOUND)|存在しないエリアが指定されました。|notfound_area|
-|400 (BAD REQUEST)|文字数がオーバーしました。|over_textlenght|
+|400 (BAD REQUEST)|文字数がオーバーしました。|over_textlength|
 |400 (BAD REQUEST)|印刷できない文字が指定されました。|notprint_text|
+|400 (BAD REQUEST)|登録テキストが見つかりません。(POSTされたJSONに問題がある場合)|notfound_inputdata|
 
 ```
 【エラーの例】
 {
     "errors": [
         {
-            "errorCode": "over_textlenght",
+            "errorCode": "over_textlength",
             "message": "文字数がオーバーしました。",
             "moreInfo": "pageNo=7,areaID=TEXT01,orverString=○○ です。"
         },...
@@ -520,14 +521,14 @@ HTTP ステータスコードとともに結果を返します。
 
 * delivery
     * familyName [string (50)] : お届け先のお名前（姓）。
-    * firstName [string (100)] : お届け先のお名前（名）。
-    * zipCode [string (8)] : お届け先の郵便番号(ハイフンなしでもOK)。
+    * firstName [string (50)] : お届け先のお名前（名）。
+    * zipCode [string (8)] : お届け先の郵便番号(ZZZ-ZZZZの形式、ハイフン必須)。
     * province [string (50)] : お届け先の都道府県。
-    * city [string (50)] : お届け先の市区郡。
+    * city [string (100)] : お届け先の市区郡。
     * addressLine1 [string (100)] : お届け先の町村番地。
     * addressLine2(任意)  [string (100)]: お届け先の建物名。
-    * company(任意)  [string (100)]: お届け先の会社名。
-    * telephone [string (50)] : お届け先の電話番号(ハイフンなしでもOK)。
+    * company(任意)  [string (50)]: お届け先の会社名。
+    * telephone [string (20)] : お届け先の電話番号(ハイフンなしでもOK)。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -535,6 +536,8 @@ HTTP ステータスコードとともに結果を返します。
 |200 (OK)|成功|-|
 |406 (NOT ACCEPTABLE)|配送先が設定されていません。|require_delivery|
 |406 (NOT ACCEPTABLE)|商品が設定されていません。|require_item|
+|406 (NOT ACCEPTABLE)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+|406 (NOT ACCEPTABLE)|データ検証でエラーが見つかりました。(文字数制限、必須チェック、冊数チェックなど)|validate_failed|
 
 ```
 【成功時の例】
