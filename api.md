@@ -520,14 +520,14 @@ HTTP ステータスコードとともに結果を返します。
 ※ 一回の注文での最大冊数は、100冊までです。
 
 * delivery
-    * familyName [string (50)] : お届け先のお名前（姓）。
-    * firstName [string (50)] : お届け先のお名前（名）。
+    * familyName [string (25)] : お届け先のお名前（姓）。
+    * firstName [string (25)] : お届け先のお名前（名）。
     * zipCode [string (8)] : お届け先の郵便番号(ZZZ-ZZZZの形式、ハイフン必須)。
-    * province [string (50)] : お届け先の都道府県。
-    * city [string (100)] : お届け先の市区郡。
-    * addressLine1 [string (100)] : お届け先の町村番地。
-    * addressLine2(任意)  [string (100)]: お届け先の建物名。
-    * company(任意)  [string (50)]: お届け先の会社名。
+    * province [string (25)] : お届け先の都道府県。
+    * city [string (50)] : お届け先の市区郡。
+    * addressLine1 [string (50)] : お届け先の町村番地。
+    * addressLine2(任意)  [string (50)]: お届け先の建物名。
+    * company(任意)  [string (25)]: お届け先の会社名。
     * telephone [string (20)] : お届け先の電話番号(ハイフンなしでもOK)。
 
 ### ***Response***
