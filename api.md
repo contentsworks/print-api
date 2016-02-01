@@ -188,19 +188,19 @@ HTTP ステータスコードとともに結果を返します。
                 ],
                 "texts": [
                     {
-                        "areaID": "TITLE.AUTHOR",
+                        "areaID": "TITLE-AUTHOR",
                         "maxLength": 20,
                         "maxLineLength": 20,
                         "maxLineCount": 1
                     },
                     {
-                        "areaID": "TITLE.SUBTITLE",
+                        "areaID": "TITLE-SUBTITLE",
                         "maxLength": 40,
                         "maxLineLength": 40,
                         "maxLineCount": 1
                     },
                     {
-                        "areaID": "TITLE.TITLE",
+                        "areaID": "TITLE-TITLE",
                         "maxLength": 20,
                         "maxLineLength": 20,
                         "maxLineCount": 1
@@ -220,7 +220,7 @@ HTTP ステータスコードとともに結果を返します。
                 ],
                 "texts": [
                     {
-                        "areaID": "TEXT.DEFAULT",
+                        "areaID": "TEXT-DEFAULT",
                         "maxLength": 984,
                         "maxLineLength": 41,
                         "maxLineCount": 24
