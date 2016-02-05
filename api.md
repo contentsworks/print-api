@@ -382,6 +382,8 @@ HTTP ステータスコードとともに結果を返します。
 |200 (OK)|成功|-|
 |404 (NOT FOUND)|存在しないページが指定されました。|notfound_page|
 |404 (NOT FOUND)|存在しないエリアが指定されました。|notfound_area|
+|412 (Requested Range Not Satisfiable)|ファイルの幅が小さすぎます。|tooshort_width|
+|412 (Requested Range Not Satisfiable)|ファイルの高さが小さすぎます。|tooshort_height|
 |413 (Request Entity Too Large)|ファイルサイズが大きすぎます。|toolarge_file|
 |415 (Unsupported Media Type)|ファイル形式が不明です。|unsupported_file|
 |400 (BAD REQUEST)|画像を読み込めませんでした。画像が壊れているか、画像に対応しておりません。|invalid_file|
@@ -469,7 +471,9 @@ HTTP ステータスコードとともに結果を返します。
 ## プレビュー取得 API
 ### ***Method*** : GET
 ### ***Url*** : /v1/{editKey}/previews/{page}
-### ***QueryString*** : ?h={height}&w={width}
+### ***QueryString*** : ?areaId={areaID}&h={height}&w={width}
+* areaId  : 商品情報取得 APIで取得したareaIDを指定してください。
+※指定したエリアを塗りつぶし、それ以外のエリアの色合いを薄くした画像を返します。
 * h  : 横幅を指定してください。
 * w  : 高さを指定してください。
 ※hかwのどちらかが指定した場合は、イメージの比率で拡縮された画像を返します。
@@ -485,6 +489,7 @@ HTTP ステータスコードとともに結果を返します。
 |:-----------|:------------|:------------|
 |200 (OK)|成功|-|
 |404 (NOT FOUND)|存在しないページが指定されました。|notfound_page|
+|404 (NOT FOUND)|存在しないエリアが指定されました。|notfound_area|
 
 ---
 ## 注文確定 API
