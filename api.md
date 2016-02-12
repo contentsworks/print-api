@@ -292,7 +292,7 @@ HTTP ステータスコードとともに結果を返します。
 {
     "texts": [
         {
-            "areaID": "TEXT01.DEFAULT",
+            "areaID": "TEXT01-DEFAULT",
             "value": "おしゃれな仕上がりと美しいレイアウトが評判のフォトブック作成サービスです。"
         }
     ],...
@@ -347,7 +347,7 @@ HTTP ステータスコードとともに結果を返します。
 {
     "texts": [
         {
-            "areaID": "TEXT01.DEFAULT",
+            "areaID": "TEXT01-DEFAULT",
             "value": "おしゃれな仕上がりと美しいレイアウトが評判のフォトブック作成サービスです。"
         }
     ],...
@@ -472,7 +472,7 @@ HTTP ステータスコードとともに結果を返します。
 ### ***Method*** : GET
 ### ***Url*** : /v1/{editKey}/previews/{page}
 ### ***QueryString*** : ?areaId={areaID}&h={height}&w={width}
-* areaId  : 商品情報取得 APIで取得したareaIDを指定してください。
+* areaId  : 商品情報取得 APIで取得したareaIDを指定してください。  
 ※指定したエリアを塗りつぶし、それ以外のエリアの色合いを薄くした画像を返します。
 * h  : 横幅を指定してください。
 * w  : 高さを指定してください。
@@ -547,7 +547,7 @@ HTTP ステータスコードとともに結果を返します。
 ```
 【成功時の例】
 {
-    "orderNo": "OPPF-90123456",
+    "orderNo": "CWIP-90123456",
 }
 ```
 * orderNo [string] : 注文を識別する一意の番号
@@ -584,7 +584,7 @@ HTTP ステータスコードとともに結果を返します。
 {
     "orders": [
         {
-            "orderNo" : "OPPF-90123456",
+            "orderNo" : "CWIP-90123456",
             "orderDateTime" : "2017/1/1 00:00:00",
             "status" : 2,
             "items" : [
