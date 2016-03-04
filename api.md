@@ -452,19 +452,13 @@ HTTP ステータスコードとともに結果を返します。
 ### ***Method*** : POST
 ### ***Header*** : X-HTTP-Method-Override=PUT
 ### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}
+### ***QueryString***
+* imageId : 配置する画像の画像IDを指定してください。画像IDは画像アップロードAPIの戻り値として取得します。
+
 ### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 * pageNo : ページ番号を指定してください。
 * areaID : 取得したいテキストエリアのIDを指定してください。
-```
-{
-    "imageSourceType": "ImageId",
-    "imageIdentifier": "2-158-4-528-20160209191142-277116579"
-}
-```
-* 配置する画像を指定します。
- * imageSourceType [string] : 画像の指定方法を識別する文字列です。現在は「ImageId」のみサポートしています。
- * imageIdentifier [string] : 画像を特定する識別子です。imageSourceType：ImageIdを選択した場合は、画像アップロードAPIが返すIDを指定します。
 
 ### ***Response***
 ```
@@ -472,7 +466,7 @@ HTTP ステータスコードとともに結果を返します。
     "imageId":"2-158-4-528-20160209191142-277116579"
 }
 ```
-* imageId : アップロードした画像を識別するID
+* imageId : アップロードした画像を識別する画像ID。QueryStringで指定したものと同じIDが返ります。
 
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
