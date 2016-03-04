@@ -183,7 +183,7 @@ HTTP ステータスコードとともに結果を返します。
                     {
                         "areaID": "JACKET",
                         "minWidth": 828,
-                        "minHeight": 621
+                        "minHeight": 621,
                     }
                 ],
                 "texts": [
@@ -253,7 +253,7 @@ HTTP ステータスコードとともに結果を返します。
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|OK。リクエスト成功|-|
-|406 (NOT ACCEPTABLE)|指定されたitemCodeが存在しない|notacceptable_itemcode|
+|406 (Not Acceptable)|指定されたitemCodeが存在しない|notacceptable_itemcode|
 
 ---
 ## 作品作成開始 作品キー取得 API
@@ -277,7 +277,7 @@ HTTP ステータスコードとともに結果を返します。
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|OK。成功|-|
-|406 (NOT ACCEPTABLE)|指定されたitemCodeが存在しない|itemcode_notexist|
+|406 (Not Acceptable)|指定されたitemCodeが存在しない|itemcode_notexist|
 
 ---
 ## テキスト登録/更新 API
@@ -309,12 +309,12 @@ HTTP ステータスコードとともに結果を返します。
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|OK。成功|-|
-|406 (NOT ACCEPTABLE)|指定されたeditKeyが存在しない|notacceptable_editkey|
-|404 (NOT FOUND)|存在しないページが指定されました。|notfound_page|
-|404 (NOT FOUND)|存在しないエリアが指定されました。|notfound_area|
-|400 (BAD REQUEST)|文字数がオーバーしました。|over_textlength|
-|400 (BAD REQUEST)|印刷できない文字が指定されました。|notprint_text|
-|400 (BAD REQUEST)|登録テキストが見つかりません。(POSTされたJSONに問題がある場合)|notfound_inputdata|
+|406 (Not Acceptable)|指定されたeditKeyが存在しない|notacceptable_editkey|
+|404 (Not Found)|存在しないページが指定されました。|notfound_page|
+|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
+|400 (Bad Request)|文字数がオーバーしました。|over_textlength|
+|400 (Bad Request)|印刷できない文字が指定されました。|notprint_text|
+|400 (Bad Request)|登録テキストが見つかりません。(POSTされたJSONに問題がある場合)|notfound_inputdata|
 
 ```
 【エラーの例】
@@ -357,37 +357,39 @@ HTTP ステータスコードとともに結果を返します。
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|OK。成功|-|
-|404 (NOT FOUND)|存在しないページが指定されました。|notfound_page|
-|404 (NOT FOUND)|存在しないエリアが指定されました。|notfound_area|
+|404 (Not Found)|存在しないページが指定されました。|notfound_page|
+|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
 
 
 ---
-## 画像アップロード/更新 API
+## 画像アップロードAPI
 ### ***Method*** : POST
-### ***Header*** : X-HTTP-Method-Override=PUT
-### ***Url*** : /v1/{editKey}/images/{page}/{areaID}
-### ***Request Body***
+### ***Url*** : /v1/{editKey}/images/
+### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
-* pageNo : ページ番号を指定してください。
-* areaID : 取得したいテキストエリアのIDを指定してください。
 
 ### ***Request Body***
 アップロードする画像ファイルを含めてください。ファイルが複数ある場合は一つ目のみが適用されます。
-※存在しない場合は、エリアに配置された画像ファイルが削除されます。  
 ※最大画像サイズは20MB、対応するフォーマットはjpegのみです。
 
 ### ***Response***
+
+```
+{
+    "imageId":"2-158-4-528-20160209191142-277116579"
+}
+```
+* imageId : アップロードした画像を識別するID
+
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|成功|-|
-|404 (NOT FOUND)|存在しないページが指定されました。|notfound_page|
-|404 (NOT FOUND)|存在しないエリアが指定されました。|notfound_area|
-|412 (Requested Range Not Satisfiable)|ファイルの幅が小さすぎます。|tooshort_width|
-|412 (Requested Range Not Satisfiable)|ファイルの高さが小さすぎます。|tooshort_height|
+|400 (Bad Request)|画像を読み込めませんでした。画像が壊れているか、画像に対応しておりません。|invalid_file|
+|406 (Not Acceptable)|指定されたEditKeyが見つかりません。|notacceptable_editkey|
+|406 (Not Acceptable)|指定されたEditKeyが見つかりません。(注文済の作品は編集できません))|notacceptable_editkey|
 |413 (Request Entity Too Large)|ファイルサイズが大きすぎます。|toolarge_file|
 |415 (Unsupported Media Type)|ファイル形式が不明です。|unsupported_file|
-|400 (BAD REQUEST)|画像を読み込めませんでした。画像が壊れているか、画像に対応しておりません。|invalid_file|
-
+|415 (Unsupported Media Type)|画像ファイルを選択してください。|unsupported_file|
 ```
 【エラーの例】
 {
@@ -400,12 +402,107 @@ HTTP ステータスコードとともに結果を返します。
     ]
 }
 ```
+---
+## 画像アップロード/更新 API
+### ***Method*** : POST
+### ***Header*** : X-HTTP-Method-Override=PUT
+### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}
+### ***Request***
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+* pageNo : ページ番号を指定してください。
+* areaID : 取得したいテキストエリアのIDを指定してください。
 
+### ***Request Body***
+アップロードする画像ファイルを含めてください。ファイルが複数ある場合は一つ目のみが適用されます。
+※存在しない場合は、エリアに配置された画像ファイルが削除されます。  
+※最大画像サイズは20MB、対応するフォーマットはjpegのみです。
+
+### ***Response***
+```
+{
+    "imageId":"2-158-4-528-20160209191142-277116579"
+}
+```
+* imageId : アップロードした画像を識別するID
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|400 (Bad Request)|画像を読み込めませんでした。画像が壊れているか、画像に対応しておりません。|invalid_file|
+|404 (Not Found)|存在しないページが指定されました。|notfound_page|
+|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
+|412 (Requested Range Not Satisfiable)|ファイルの幅が小さすぎます。|tooshort_width|
+|412 (Requested Range Not Satisfiable)|ファイルの高さが小さすぎます。|tooshort_height|
+|413 (Request Entity Too Large)|ファイルサイズが大きすぎます。|toolarge_file|
+|415 (Unsupported Media Type)|ファイル形式が不明です。|unsupported_file|
+```
+【エラーの例】
+{
+    "errors": [
+        {
+            "errorCode": "unsupported_file",
+            "message": "ファイル形式が不明です。",
+            "moreInfo": "ご利用できる画像ファイル形式はjpeg（jpg）のみです。"
+        },...
+    ]
+}
+```
+---
+## 画像配置/更新 API
+### ***Method*** : POST
+### ***Header*** : X-HTTP-Method-Override=PUT
+### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}
+### ***Request***
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+* pageNo : ページ番号を指定してください。
+* areaID : 取得したいテキストエリアのIDを指定してください。
+```
+{
+    "imageSourceType": "ImageId",
+    "imageIdentifier": "2-158-4-528-20160209191142-277116579"
+}
+```
+* 配置する画像を指定します。
+ * imageSourceType [string] : 画像の指定方法を識別する文字列です。現在は「ImageId」のみサポートしています。
+ * imageIdentifier [string] : 画像を特定する識別子です。imageSourceType：ImageIdを選択した場合は、画像アップロードAPIが返すIDを指定します。
+
+### ***Response***
+```
+{
+    "imageId":"2-158-4-528-20160209191142-277116579"
+}
+```
+* imageId : アップロードした画像を識別するID
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|400 (Bad Request)|画像を読み込めませんでした。画像が壊れているか、画像に対応しておりません。|invalid_file|
+|404 (Not Found)|存在しないページが指定されました。|notfound_page|
+|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
+|406 (Not Acceptable)|指定されたEditKeyが見つかりません。|notacceptable_editkey|
+|406 (Not Acceptable)|指定されたEditKeyが見つかりません。(注文済の作品は編集できません))|notacceptable_editkey|
+|412 (Requested Range Not Satisfiable)|ファイルの幅が小さすぎます。|tooshort_width|
+|412 (Requested Range Not Satisfiable)|ファイルの高さが小さすぎます。|tooshort_height|
+|413 (Request Entity Too Large)|ファイルサイズが大きすぎます。|toolarge_file|
+|415 (Unsupported Media Type)|ファイル形式が不明です。|unsupported_file|
+```
+【エラーの例】
+{
+    "errors": [
+        {
+            "errorCode": "notfound_page",
+            "message": "存在しないページが指定されました。",
+            "moreInfo": "5ページ"
+        },...
+    ]
+}
+```
 ---
 ## 画像アップロード取消 API
 ### ***Method*** : POST
 ### ***Header*** : X-HTTP-Method-Override=DELETE
-### ***Url*** : /v1/{editKey}/images/{page}/{areaID}
+### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}
 ### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 * pageNo : ページ番号を指定してください。
@@ -415,9 +512,9 @@ HTTP ステータスコードとともに結果を返します。
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|成功|-|
-|404 (NOT FOUND)|存在しないページが指定されました。|notfound_page|
-|404 (NOT FOUND)|存在しないエリアが指定されました。|notfound_area|
-|404 (NOT FOUND)|ファイルが存在しません。|notfound_file|
+|404 (Not Found)|存在しないページが指定されました。|notfound_page|
+|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
+|404 (Not Found)|ファイルが存在しません。|notfound_file|
 
 ```
 【エラーの例】
@@ -435,7 +532,7 @@ HTTP ステータスコードとともに結果を返します。
 ---
 ## アップロード画像取得 API
 ### ***Method*** : GET
-### ***Url*** : /v1/{editKey}/images/{page}/{areaID}
+### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}
 ### ***QueryString***
 * h : 横幅を指定してください。
 * w : 高さを指定してください。
@@ -450,9 +547,9 @@ HTTP ステータスコードとともに結果を返します。
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|成功|-|
-|404 (NOT FOUND)|存在しないページが指定されました。|notfound_page|
-|404 (NOT FOUND)|存在しないエリアが指定されました。|notfound_area|
-|404 (NOT FOUND)|ファイルが存在しません。|notfound_file|
+|404 (Not Found)|存在しないページが指定されました。|notfound_page|
+|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
+|404 (Not Found)|ファイルが存在しません。|notfound_file|
 
 ```
 【エラーの例】
@@ -470,12 +567,12 @@ HTTP ステータスコードとともに結果を返します。
 ---
 ## プレビュー取得 API
 ### ***Method*** : GET
-### ***Url*** : /v1/{editKey}/previews/{page}
+### ***Url*** : /v1/{editKey}/previews/{pageNo}
 ### ***QueryString*** : ?areaId={areaID}&h={height}&w={width}
 * areaId  : 商品情報取得 APIで取得したareaIDを指定してください。  
 ※指定したエリアを塗りつぶし、それ以外のエリアの色合いを薄くした画像を返します。
-* h  : 横幅を指定してください。
-* w  : 高さを指定してください。
+* height  : 横幅を指定してください。
+* width  : 高さを指定してください。
 ※hかwのどちらかが指定した場合は、イメージの比率で拡縮された画像を返します。
 
 ### ***Request***
@@ -488,8 +585,8 @@ HTTP ステータスコードとともに結果を返します。
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|成功|-|
-|404 (NOT FOUND)|存在しないページが指定されました。|notfound_page|
-|404 (NOT FOUND)|存在しないエリアが指定されました。|notfound_area|
+|404 (Not Found)|存在しないページが指定されました。|notfound_page|
+|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
 
 ---
 ## 注文確定 API
@@ -540,10 +637,10 @@ HTTP ステータスコードとともに結果を返します。
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|成功|-|
-|406 (NOT ACCEPTABLE)|配送先が設定されていません。|require_delivery|
-|406 (NOT ACCEPTABLE)|商品が設定されていません。|require_item|
-|406 (NOT ACCEPTABLE)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
-|406 (NOT ACCEPTABLE)|データ検証でエラーが見つかりました。(文字数制限、必須チェック、冊数チェックなど)|validate_failed|
+|406 (Not Acceptable)|配送先が設定されていません。|require_delivery|
+|406 (Not Acceptable)|商品が設定されていません。|require_item|
+|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+|406 (Not Acceptable)|データ検証でエラーが見つかりました。(文字数制限、必須チェック、冊数チェックなど)|validate_failed|
 
 ```
 【成功時の例】
@@ -579,7 +676,7 @@ HTTP ステータスコードとともに結果を返します。
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|成功|-|
-|404 (NOT FOUND)|指定された注文は見つかりませんでした。|notfound_order|
+|404 (Not Found)|指定された注文は見つかりませんでした。|notfound_order|
 
 ```
 {
@@ -644,16 +741,16 @@ HTTP ステータスコードとともに結果を返します。
 ### ***Header*** : X-HTTP-Method-Override=DELETE
 ### ***Url*** : /v1/orders/{orderNo}
 ### ***Request***
-* orderNo : 注文確定 APIにて発行したOrderNoをご指定下さい。(CWIP-90123456の形式)  
+* orderNo (任意): 注文確定 APIにて発行したOrderNoをご指定下さい。(CWIP-90123456の形式)  
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|成功|-|
-|404 (NOT FOUND)|指定された注文が見つかりません。|notfound_order|
-|406 (NOT ACCEPTABLE)|キャンセル期限が過ぎています。|not_cancel|
-|406 (NOT ACCEPTABLE)|既にキャンセルされています。|is_canceled|
-|406 (NOT ACCEPTABLE)|未確定の注文です。|invalid_status|
+|404 (Not Found)|指定された注文が見つかりません。|notfound_order|
+|406 (Not Acceptable)|キャンセル期限が過ぎています。|not_cancel|
+|406 (Not Acceptable)|既にキャンセルされています。|is_canceled|
+|406 (Not Acceptable)|未確定の注文です。|invalid_status|
 
 ```
 【エラーの例】
@@ -667,4 +764,3 @@ HTTP ステータスコードとともに結果を返します。
     ],...
 }
 ```
-
