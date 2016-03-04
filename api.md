@@ -637,3 +637,34 @@ HTTP ステータスコードとともに結果を返します。
 
 
 ※ 注文受付から24時間以内には、注文確定となり出荷予定日が決まります。
+
+---
+## 注文キャンセル API
+### ***Method*** : POST
+### ***Header*** : X-HTTP-Method-Override=DELETE
+### ***Url*** : /v1/orders/{orderNo}
+### ***Request***
+* orderNo : 注文確定 APIにて発行したOrderNoをご指定下さい。(CWIP-90123456の形式)  
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|404 (NOT FOUND)|指定された注文が見つかりません。|notfound_order|
+|406 (NOT ACCEPTABLE)|キャンセル期限が過ぎています。|not_cancel|
+|406 (NOT ACCEPTABLE)|既にキャンセルされています。|is_canceled|
+|406 (NOT ACCEPTABLE)|未確定の注文です。|invalid_status|
+
+```
+【エラーの例】
+{
+    "errors": [
+        {
+            "errorCode": "not_cancel",
+            "message": "キャンセル期限が過ぎています。",
+            "moreInfo": "orderNo:CWIP-90123456"
+        }
+    ],...
+}
+```
+
