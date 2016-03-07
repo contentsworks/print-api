@@ -431,10 +431,10 @@ HTTP ステータスコードとともに結果を返します。
 |400 (Bad Request)|画像を読み込めませんでした。画像が壊れているか、画像に対応しておりません。|invalid_file|
 |404 (Not Found)|存在しないページが指定されました。|notfound_page|
 |404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
-|412 (Requested Range Not Satisfiable)|ファイルの幅が小さすぎます。|tooshort_width|
-|412 (Requested Range Not Satisfiable)|ファイルの高さが小さすぎます。|tooshort_height|
 |413 (Request Entity Too Large)|ファイルサイズが大きすぎます。|toolarge_file|
 |415 (Unsupported Media Type)|ファイル形式が不明です。|unsupported_file|
+|416 (Requested Range Not Satisfiable)|ファイルの幅が小さすぎます。|tooshort_width|
+|416 (Requested Range Not Satisfiable)|ファイルの高さが小さすぎます。|tooshort_height|
 ```
 【エラーの例】
 {
@@ -476,10 +476,10 @@ HTTP ステータスコードとともに結果を返します。
 |404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
 |406 (Not Acceptable)|指定されたEditKeyが見つかりません。|notacceptable_editkey|
 |406 (Not Acceptable)|指定されたEditKeyが見つかりません。(注文済の作品は編集できません))|notacceptable_editkey|
-|412 (Requested Range Not Satisfiable)|ファイルの幅が小さすぎます。|tooshort_width|
-|412 (Requested Range Not Satisfiable)|ファイルの高さが小さすぎます。|tooshort_height|
 |413 (Request Entity Too Large)|ファイルサイズが大きすぎます。|toolarge_file|
 |415 (Unsupported Media Type)|ファイル形式が不明です。|unsupported_file|
+|416 (Requested Range Not Satisfiable)|ファイルの幅が小さすぎます。|tooshort_width|
+|416 (Requested Range Not Satisfiable)|ファイルの高さが小さすぎます。|tooshort_height|
 ```
 【エラーの例】
 {
