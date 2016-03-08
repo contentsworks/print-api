@@ -277,7 +277,7 @@ HTTP ステータスコードとともに結果を返します。
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|OK。成功|-|
-|406 (Not Acceptable)|指定されたitemCodeが存在しない|itemcode_notexist|
+|404 (Not Found)|指定されたitemCodeが存在しない|itemcode_notexist|
 
 ---
 ## テキスト登録/更新 API
