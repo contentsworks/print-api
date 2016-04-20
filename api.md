@@ -1,13 +1,49 @@
-# Photobook API仕様 ver 1.0
+# Photobook API仕様 ver 1.1.0
 
 Photobook APIの開発者向けのドキュメントです。
 
 ## エンドポイント
-開発用と本番用が用意されています。
-詳しくはお問合せ下さい。
+開発用と本番用が用意されています。詳しくはお問合せ下さい。
 
 ---
-## 認証API
+## API一覧
+### 認証
+* [認証 API](#認証-api)
+
+### 編集
+* [商品情報取得 API](#商品情報取得-api)
+* [作品作成開始 作品キー取得 API](#作品作成開始-作品キー取得-api)
+* [テキスト登録/更新 API](#テキスト登録更新-api)
+* [テキスト取得 API](#テキスト取得-api)
+* [画像アップロード API](#画像アップロード-api) ...画像のアップロードのみでエリアには配置しない
+* [画像アップロード/更新 API](#画像アップロード更新-api) ...アップロード画像をエリアにダイレクトに配置
+* [画像配置/更新 API](#画像配置更新-api) ...アップロード済の画像をエリアに配置
+* [画像アップロード取消 API](#画像アップロード取消-api)
+* [アップロード画像取得 API](#アップロード画像取得-api)
+* [編集アイテム一覧取得 API](#編集アイテム一覧取得-api)
+* [プレビュー取得 API](#プレビュー取得-api)
+* [編集アイテム検証 API](#編集アイテム検証-api)
+
+### カート
+* [カート 開始 API](#カート-開始-api)
+* [カート 作品追加 API](#カート-作品追加-api)
+* [カート 作品数量変更 API](#カート-作品数量変更-api)
+* [カート 作品情報取得 API](#カート-作品情報取得-api)
+* [カート 作品削除 API](#カート-作品削除-api)
+* [カート お届け先情報登録/更新 API](#カート-お届け先情報登録更新-api)
+* [カート お届け先情報取得 API](#カート-お届け先情報取得-api)
+* [カート 請求情報取得 API](#カート-請求情報取得-api)
+* [カート お支払情報登録/更新 API](#カート-お支払情報登録更新-api)
+* [カート お支払情報取得 API](#カート-お支払情報取得-api)
+* [カート 注文情報確認 API](#カート-注文情報確認-api)
+
+### 注文
+* [注文確定 API](#注文確定-api)
+* [注文情報取得 API](#注文情報の取得-api)
+* [注文キャンセル API](#注文キャンセル-api)
+
+---
+## 認証 API
 各種APIを利用するためには、OAuth2.0により規定された認可を行い事前にアクセストークンを取得します。  
 API呼び出しの際、Authorizationヘッダーでアクセストークンを送信して認証します。
 
@@ -34,8 +70,8 @@ Content-Type: application/x-www-form-urlencoded
 API側では、作成ユーザーをusernameにて識別します。 トークンを取得する時は同一のusername、passwordを使用してください。
 
 * grant_type [string]　: password固定
-* username [string]　: client_id内で一意となる作成ユーザ識別文字列
-* password(任意) [string]　: 作成ユーザのパスワード。設定することを推奨します
+* username [string]　: client_id内で一意となる作成ユーザー識別文字列
+* password(任意) [string]　: 作成ユーザーのパスワード。設定することを推奨します
 
 #### ***Response (status code)***
 
@@ -205,7 +241,7 @@ HTTP ステータスコードとともに結果を返します。
                 ]
             },
             {
-                "pageNo": 1,
+                "page": 1,
                 "pageType": "Body",
                 "templateType": "Right",
                 "images": [
@@ -231,7 +267,7 @@ HTTP ステータスコードとともに結果を返します。
 * itemSpecifics : アイテムの要素。
  * totalImageCount [number] : 全イメージエリアの数。
  * pages : ページの要素。
-   * pageNo [number] : ページの番号。
+   * page [number] : ページの番号。
    * pageType [string] : ページの種類。（Jacket：表紙, Body：本文, Front：扉, Colophon：奥付け）
    * TemplateType : テンプレートの種類。（Left：左ページ, Right：右ページ, Spread：見開き）
    * images : ページの画像エリア情報
@@ -267,8 +303,8 @@ HTTP ステータスコードとともに結果を返します。
 }
 ```
 
-* editKey [number] : 作成する作品を識別するためのキーです。
-* expireDate [date] : 作成する作品の編集期限です。発行日を基準にして+7日となります。例）2016/1/1に取得→2016/1/8
+* editKey [string] : 作成する作品を識別するためのキーです。
+* expireDate [datetime] : 作成する作品の編集期限です。発行日を基準にして+7日となります。例）2016/1/1に取得→2016/1/8
 
 
 | ステータスコード | 意味|エラーコード|
@@ -280,7 +316,7 @@ HTTP ステータスコードとともに結果を返します。
 ## テキスト登録/更新 API
 ### ***Method*** : POST
 ### ***Header*** : X-HTTP-Method-Override=PUT
-### ***Url*** : /v1/{editKey}/texts/{pageNo}/
+### ***Url*** : /v1/{editKey}/texts/{pageNo}
 ### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 * pageNo : ページ番号を指定してください。
@@ -359,9 +395,12 @@ HTTP ステータスコードとともに結果を返します。
 
 
 ---
-## 画像アップロードAPI
+## 画像アップロード API
+画像のアップロードのみを行います。  
+エリアへの配置は「画像配置/更新 API」で行います。
+
 ### ***Method*** : POST
-### ***Url*** : /v1/{editKey}/images/
+### ***Url*** : /v1/{editKey}/images
 ### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 
@@ -401,6 +440,9 @@ HTTP ステータスコードとともに結果を返します。
 ```
 ---
 ## 画像アップロード/更新 API
+画像をアップロードし、指定したエリアに配置します。  
+「画像配置/更新 API」で後から別のエリアに配置することも可能です。
+
 ### ***Method*** : POST
 ### ***Header*** : X-HTTP-Method-Override=PUT
 ### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}
@@ -446,6 +488,8 @@ HTTP ステータスコードとともに結果を返します。
 ```
 ---
 ## 画像配置/更新 API
+アップロード済の画像を指定エリアに配置します。
+
 ### ***Method*** : POST
 ### ***Header*** : X-HTTP-Method-Override=PUT
 ### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}
@@ -554,6 +598,41 @@ HTTP ステータスコードとともに結果を返します。
     ]
 }
 ```
+---
+## 編集アイテム一覧取得 API
+### ***Method*** : GET
+### ***Url*** : /v1/edit-items/
+
+### ***Response***
+```
+{
+  "editItems": [
+    {
+      "editKey": "4022436311773427713",
+      "itemCode": "674331968573712513",
+      "title": "taitoruA",
+      "isOrdered": true,
+      "itemPrice": 3600,
+      "expirationDate": "2016/03/10",
+      "lastEditTime": "2016-02-25T14:14:03.463",
+      "createTime": "2016-02-25T10:25:50.403"
+    },...
+}
+```
+認証ユーザーが所有する編集中のアイテムのリストを返します。
+editKeyが有効期限内の編集アイテムのみ抽出します。
+* editKey [string]  : 編集中の作品を識別するためのキー
+* itemCode [string]  : アイテムの種類を識別するコード
+* title  [string] : 編集データにある作品のタイトル
+* isOrdered [bool] : 注文の有無。trueの場合注文済、falseの場合未注文の作品であることを表します
+* itemPrice [number] : アイテムの販売価格(税込)
+* expirationDate [datetime] : editKeyの有効期限です。有効期限を超過すると注文や編集はできません
+* lastEditTime [datetime] : 編集データの最終更新日
+* createTime [datetime] : editKeyの生成日
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
 
 ---
 ## プレビュー取得 API
@@ -580,11 +659,494 @@ HTTP ステータスコードとともに結果を返します。
 |404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
 
 ---
+## カート 開始 API
+### ***Method*** : POST
+### ***Url*** : /v1/carts
+### ***Request***
+カートを使用する際に必要な cartNo を取得します。
+
+### ***Response***
+```
+{
+    "cartNo": "6302524379815465985",
+    "expireDate": "2016/1/1"
+}
+```
+
+* cartNo [string] : カート情報を識別するためのキーです。
+* expireDate [datetime] : カートの有効期限です。発行日を基準にして+7日となります。例）2016/1/1に取得→2016/1/8
+
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|OK。成功|-|
+
+---
+## 編集アイテム検証 API
+### ***Method*** : GET
+### ***Url*** : /v1/{editKey}/validate/
+### ***Request***
+ * editKey [string] : 作成する作品を識別するためのキーです。
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+
+```
+{    
+    "warningCount":5,
+    "errorCount":2,
+    "pages": [
+        {
+            "page":3,
+            "warnings": [
+	            {
+		            "areaId": "PHOTO",
+		            "message": "画像が配置されていません。"
+		        },
+		        {
+		            "areaId": "TEXT-DEFAULT",
+		            "message": "テキストが入力されていません。"
+		        }
+		    ],
+            "errors": []
+        },
+        {
+            "page":7,
+            "warnings": [
+	            {
+		            "areaId": "PHOTO",
+		            "message": "画像が配置されていません。"
+		        },
+		        {
+		            "areaId": "TEXT-DEFAULT",
+		            "message": "テキストが入力されていません。"
+		        }
+		    ],
+            "errors": [
+	            {
+		            "areaId": "PHOTO01",
+		            "message": "使用している画像が壊れています。"
+		        }
+            ]
+        },...
+    ]
+}
+```
+
+* warningCount [number] : 作成されていないエリアの総数
+* errorCount [number] : 注文に影響があるエリアの総数
+* pages : ページの要素
+    * page [number] : ページの番号。
+    * warnings : Warningのリスト
+        * areaId [string] : page内で一意となるエリアID。
+        * message [string] : Warningの内容
+    * errors : Errorのリスト
+        * areaId [string] : page内で一意となるエリアID。
+        * message [string] : Errorの内容
+
+---
+## カート 作品情報取得 API
+### ***Method*** : GET
+### ***Url*** : /v1/carts/{cartNo}/items
+### ***Request***
+* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+
+### ***Response***
+
+```
+{
+    "items": [
+        {
+            "editKey": "4941036644930230273",
+            "title": "写真日記（１）",
+            "copy": 2,
+            "unitPrice": 1500,
+            "totalPrice": 3000
+        },
+        {
+            "editKey": "8207160303711806465",
+            "title": "写真日記（２）",
+            "copy": 3,
+            "unitPrice": 1200,
+            "totalPrice": 3600
+        }, ...
+}
+```
+* items : アイテムの要素。
+ * editKey [string] : 作成する作品を識別するためのキーです。
+ * title [string] : 編集データにある作品のタイトルを返します。
+ * copy [number] : 注文する作品の冊数。
+ * unitPrice [number] : 作品の単価(決済を行わない場合は0を返します)。
+ * totalPrice [number] : 作品の合計(決済を行わない場合は0を返します)。
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|OK。リクエスト成功|-|
+|406 (Not Acceptable)|存在しないcartNoが指定されました。|notacceptable_cartno|
+
+---
+## カート 作品追加 API
+### ***Method*** : POST
+### ***Url*** : /v1/carts/{cartNo}/items/{editKey}
+### ***Request***
+* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|406 (Not Acceptable)|存在しないcartNoが指定されました。|notacceptable_cartno|
+|406 (Not Acceptable)|存在しないeditkeyが指定されました。|notacceptable_editkey|
+
+---
+## カート 作品数量変更 API
+### ***Method*** : POST
+### ***Header*** : X-HTTP-Method-Override=PUT
+### ***Url*** : /v1/carts/{cartNo}/items/{editKey}
+### ***Request***
+* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+
+```
+{
+    "copy": 4
+}
+```
+
+* copy [number] : 注文する作品の冊数。
+※ 一回の注文での最大冊数は、100冊までです。
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|OK。成功|-|
+|406 (Not Acceptable)|存在しないcartNoが指定されました。|notacceptable_cartno|
+|406 (Not Acceptable)|存在しないeditkeyが指定されました。|notacceptable_editkey|
+
+---
+## カート 作品削除 API
+### ***Method*** : POST
+### ***Header*** : X-HTTP-Method-Override=DELETE
+### ***Url*** : /v1/carts/{cartNo}/items/{editKey}
+### ***Request***
+* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|OK。成功|-|
+|406 (Not Acceptable)|存在しないcartNoが指定されました。|notacceptable_cartno|
+|406 (Not Acceptable)|存在しないeditkeyが指定されました。|notacceptable_editkey|
+
+---
+## カート お届け先情報登録/更新 API
+### ***Method*** : POST
+### ***Header*** : X-HTTP-Method-Override=PUT
+### ***Url*** : /v1/carts/{cartNo}/deliveries
+### ***Request***
+* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+
+```
+{
+    "delivery" : 
+    {
+        "familyName" : "紺天",
+        "firstName" : "津太郎",
+        "zipCode" : "101-0051",
+        "province" : "東京都",
+        "city" : "千代田区",
+        "addressLine1" : "神田神保町2-4",
+        "addressLine2" : "Daiwa神保町ビル5F",
+        "company" : "コンテンツワークス株式会社",
+        "telephone" : "03-6674-2250"
+    }
+}
+```
+
+* delivery : 注文の配送先要素
+    * familyName [string (25)] : お届け先のお名前（姓）。
+    * firstName [string (25)] : お届け先のお名前（名）。
+    * zipCode [string (8)] : お届け先の郵便番号(ZZZ-ZZZZの形式、ハイフン必須)。
+    * province [string (25)] : お届け先の都道府県。
+    * city [string (50)] : お届け先の市区郡。
+    * addressLine1 [string (50)] : お届け先の町村番地。
+    * addressLine2(任意)  [string (50)]: お届け先の建物名。
+    * company(任意)  [string (25)]: お届け先の会社名。
+    * telephone [string (20)] : お届け先の電話番号(ハイフンなしでもOK)。
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|OK。成功|-|
+|406 (Not Acceptable)|存在しないcartNoが指定されました。|notacceptable_cartno|
+|406 (Not Acceptable)|配送先が設定されていません。|require_delivery|
+|406 (Not Acceptable)|データ検証でエラーが見つかりました。(文字数制限、必須チェック、冊数チェックなど)|validate_failed|
+
+---
+## カート お届け先情報取得 API
+### ***Method*** : GET
+### ***Url*** : /v1/carts/{cartNo}/deliveries
+### ***Request***
+* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|404 (Not Found)|お届け先情報が登録されていません。|notfound_delivery|
+|406 (Not Acceptable)|存在しないcartNoが指定されました。|notacceptable_cartno|
+
+```
+{
+    "delivery" : 
+        {
+            "familyName" : "紺天",
+            "firstName" : "津太郎",
+            "zipCode" : "101-0051",
+            "province" : "東京都",
+            "city" : "千代田区",
+            "addressLine1" : "神田神保町2-4",
+            "addressLine2" : "Daiwa神保町ビル5F",
+            "company" : "コンテンツワークス株式会社",
+            "telephone" : "03-6674-2250"
+        }
+}
+```
+
+* delivery : 注文の配送先要素
+    * familyName [string] : お届け先のお名前（姓）。
+    * firstName [string] : お届け先のお名前（名）。
+    * zipCode [string] : お届け先の郵便番号。
+    * province [string] : お届け先の都道府県。
+    * city [string] : お届け先の市区郡。
+    * addressLine1 [string] : お届け先の町村番地。
+    * addressLine2(任意) [string] : お届け先の建物名。
+    * company(任意) [string] : お届け先の会社名。
+    * telephone [string] : お届け先の電話番号(ハイフンなしでもOK)。
+
+---
+## カート 請求情報取得 API
+### ***Method*** : GET
+### ***Url*** : /v1/carts/{cartNo}/charges
+### ***Request***
+* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|406 (Not Acceptable)|存在しないcartNoが指定されました。|notacceptable_cartno|
+
+```
+{
+    "amount" : 5000,
+    "billingItems" : [
+        {
+            "billingItem" : "商品代金",
+            "amount" : 4500
+        },
+        {
+            "billingItem" : "配送料",
+            "amount" : 500
+        }, ...
+    ]
+}
+```
+
+* amount [number] : 請求合計金額
+* billingItems : 請求項目要素
+    * billingItem [string] : 請求項目。
+    * amount [number] : 請求項目の金額。
+
+---
+## カート お支払情報登録/更新 API
+### ***Method*** : POST
+### ***Header*** : X-HTTP-Method-Override=PUT
+### ***Url*** : /v1/carts/{cartNo}/payments
+### ***Request***
+* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+
+```
+{
+    "payment" : 
+    {
+        "paymentType" : "creditcard",
+        "cardNumber" : "1111222233334444",
+        "expireMonth" : "09",
+        "expireYear" : "18",
+        "securityCode" : "073",
+        "name" : "KONTEN TSUTARO"
+    }
+}
+```
+
+* payment : 注文の支払い要素
+    * paymentType [string (20)] : 支払い方法。creditcard 固定。
+    * cardNumber [string (16)] : クレジットカードの番号。
+    * expireMonth [string (2)] : 有効期限の月(MM形式)。
+    * expireYear [string (2)] : 有効期限の年(YY形式)。
+    * securityCode [string (3)] : セキュリティコード。
+    * name [string] : クレジットカードの名義。  
+    ※印字されているアルファベットを半角英字で指定。
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|OK。成功|-|
+|406 (Not Acceptable)|存在しないcartNoが指定されました。|notacceptable_cartno|
+|406 (Not Acceptable)|支払い情報が設定されていません。|require_payment|
+|406 (Not Acceptable)|データ検証でエラーが見つかりました。(文字数制限、必須チェックなど)|validate_failed|
+
+---
+## カート お支払情報取得 API
+### ***Method*** : GET
+### ***Url*** : /v1/carts/{cartNo}/payments
+### ***Request***
+* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|406 (Not Acceptable)|存在しないcartNoが指定されました。|notacceptable_cartno|
+
+```
+{
+    "payment" : 
+    {
+        "paymentType" : "creditcard",
+        "cardNumber" : "************4444",
+        "expireMonth" : "**",
+        "expireYear" : "**",
+        "securityCode" : "***",
+        "name" : "***"
+    }
+}
+```
+クレジットカード番号の下4桁のみご確認いただけます。
+
+* payment : 注文の支払い要素
+    * paymentType [string (20)] : 支払い方法。creditcard 固定。
+    * cardNumber [string (16)] : クレジットカードの番号。
+    * expireMonth [string (2)] : 有効期限の月(MM形式)。
+    * expireYear [string (2)] : 有効期限の年(YY形式)。
+    * securityCode [string (3)] : セキュリティコード。
+    * name [string (3)] : クレジットカードの名義。
+
+---
+## カート 注文情報確認 API
+### ***Method*** : GET
+### ***Url*** : /v1/carts/{cartNo}
+### ***Request***
+* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|406 (Not Acceptable)|存在しないcartNoが指定されました。|notacceptable_cartno|
+
+```
+{
+    "cart": {
+        "cartNo": "6302524379815465985",
+        "expireDate": "2016/5/10",
+        "items": [
+            {
+                "editKey": "4941036644930230273",
+                "title": "写真日記（１）",
+                "copy": 2,
+                "unitPrice" : 1500,
+                "totalPrice" : 3000
+            },
+            {
+                "editKey": "8207160303711806465",
+                "title": "写真日記（２）",
+                "copy": 3,
+                "unitPrice" : 1200,
+                "totalPrice" : 3600
+            }, ...
+        ],
+        "amount" : 7100,
+        "billingItems" : [
+            {
+                "billingItem" : "商品代金",
+                "amount" : 6600
+            },
+            {
+                "billingItem" : "配送料",
+                "amount" : 500
+            }, ...
+        ],
+        "payment" : 
+        {
+            "paymentType" : "creditcard",
+            "cardNumber" : "************4444",
+            "expireMonth" : "**",
+            "expireYear" : "**",
+            "securityCode" : "***",
+            "name" : "***"
+        },
+        "delivery" : 
+        {
+            "familyName" : "紺天",
+            "firstName" : "津太郎",
+            "zipCode" : "101-0051",
+            "province" : "東京都",
+            "city" : "千代田区",
+            "addressLine1" : "神田神保町2-4",
+            "addressLine2" : "Daiwa神保町ビル5F",
+            "company" : "コンテンツワークス株式会社",
+            "telephone" : "03-6674-2250"
+        }
+    }
+}
+```
+支払い情報は、クレジットカード番号の下4桁のみご確認いただけます。
+
+* cart
+    * cartNo [string] : カートを管理するための番号です。
+    * expireDate [datetime] : カートの有効期限を返します。
+    * items : 注文の商品のリスト
+        * editKey [string] : 作品キー取得 APIにて発行したキーを指定してください。
+        * title [string] : 作品のタイトルを返します。
+        * copy [number] : 注文された冊数を返します。
+        * unitPrice [number] : 作品の単価(決済を行わない場合は0を返します)。
+        * totalPrice [number] : 作品の合計(決済を行わない場合は0を返します)。
+    * amount [number] : 請求合計金額を返します(決済を行わない場合は0を返します)。
+    * billingItems : 請求項目要素
+        * billingItem [string] : 請求項目名。
+        * amount [number] : 請求項目の金額。
+    * payment : 注文の支払い要素
+        * paymentType [string (20)] : 支払い方法。creditcard 固定。
+        * cardNumber [string (16)] : クレジットカードの番号。
+        * expireMonth [string (2)] : 有効期限の月(MM形式)。
+        * expireYear [string (2)] : 有効期限の年(YY形式)。
+        * securityCode [string (3)] : セキュリティコード。
+        * name [string (3)] : クレジットカードの名義。
+    * delivery : 注文の配送先の要素
+        * familyName [string] : お届け先のお名前（姓）。
+        * firstName [string] : お届け先のお名前（名）。
+        * zipCode [string] : お届け先の郵便番号。
+        * province [string] : お届け先の都道府県。
+        * city [string] : お届け先の市区郡。
+        * addressLine1 [string] : お届け先の町村番地。
+        * addressLine2(任意) [string] : お届け先の建物名。
+        * company(任意) [string] : お届け先の会社名。
+        * telephone [string] : お届け先の電話番号(ハイフンなしでもOK)。
+
+---
 ## 注文確定 API
 ### ***Method*** : POST
-### ***Url*** : /v1/orders/
+### ***Url*** : /v1/orders/{cartNo}
 ### ***Request***
-
+* cartNo [string] (任意) : カート番号を指定します。カート開始APIで取得したコードを指定してください。  
+※cartNoを指定した場合、Requestは必要ありません。
 ```
 {
     "items" : [
@@ -608,9 +1170,9 @@ HTTP ステータスコードとともに結果を返します。
 }
 ```
 * item
-    * editKey : 作品キー取得 APIにて発行したキーを指定してください。  
+    * editKey [string] : 作品キー取得 APIにて発行したキーを指定してください。  
 ※ 注文日を基準にしてeditKeyの有効期限が+14日となります。例）2016/1/1に注文→2016/1/15
-    * copy : 注文する作品の冊数。  
+    * copy [number] : 注文する作品の冊数。  
 ※ 一回の注文での最大冊数は、100冊までです。
 
 * delivery
@@ -623,11 +1185,15 @@ HTTP ステータスコードとともに結果を返します。
     * addressLine2(任意)  [string (50)]: お届け先の建物名。
     * company(任意)  [string (25)]: お届け先の会社名。
     * telephone [string (20)] : お届け先の電話番号(ハイフンなしでもOK)。
+---
+
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|成功|-|
+|406 (Not Acceptable)|存在しないcartNoが指定されました。|notacceptable_cartno|
+|406 (Not Acceptable)|有効期限が過ぎています。|notacceptable_cartno|
 |406 (Not Acceptable)|配送先が設定されていません。|require_delivery|
 |406 (Not Acceptable)|商品が設定されていません。|require_item|
 |406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
@@ -646,14 +1212,13 @@ HTTP ステータスコードとともに結果を返します。
 {
     "errors": [
         {
-            "errorCode": "require_delivery",
-            "message": "配送先が設定されていません。",
-            "moreInfo": "配送先を設定してください。"
+            "errorCode": "notacceptable_cartno",
+            "message": "有効期限が過ぎています。",
+            "moreInfo": "CartNo:6302524379815465985"
         }
     ],...
 }
 ```
-
 ---
 ## 注文情報の取得 API
 ### ***Method*** : GET
@@ -680,28 +1245,42 @@ HTTP ステータスコードとともに結果を返します。
                 {
                     editKey : "3800604642207821313",
                     title : "写真日記",
-                    Copy : 10,
+                    copy : 10,
+                    unitPrice : 1600,
+                    totalPrice : 16000
                 },...
             ],
-            "delivery" : 
+            "amount" : 16500,
+        	"billingItems" : [
                 {
-                    "familyName" : "紺天",
-                    "firstName" : "津太郎",
-                    "zipCode" : "101-0051",
-                    "province" : "東京都",
-                    "city" : "千代田区",
-                    "addressLine1" : "神田神保町2-4",
-                    "addressLine2" : "Daiwa神保町ビル5F",
-                    "company" : "コンテンツワークス株式会社",
-                    "telephone" : "03-6674-2250",
-                    "shipDueDate" : "2017/1/1"
-                },...
-            
+                    "billingItem" : "商品代金",
+                    "amount" : 16000
+                },
+                {
+                    "billingItem" : "配送料",
+                    "amount" : 500
+                }, ...
+        	],
+            "paymentType" : "creditcard",  
+            "delivery" : 
+            {
+                "familyName" : "紺天",
+                "firstName" : "津太郎",
+                "zipCode" : "101-0051",
+                "province" : "東京都",
+                "city" : "千代田区",
+                "addressLine1" : "神田神保町2-4",
+                "addressLine2" : "Daiwa神保町ビル5F",
+                "company" : "コンテンツワークス株式会社",
+                "telephone" : "03-6674-2250",
+                "shipDueDate" : "2017/1/1",
+                "shippingNo" : "9876543210"
+            },...
         },...
     ],...
 }
-```
 
+```
 
 * orders
     * orderNo [string] : 注文を管理するための番号です。
@@ -709,9 +1288,16 @@ HTTP ステータスコードとともに結果を返します。
     * status [number] : 注文のステータス（1:注文受付, 2:注文確定, 3:注文保留, 4:出荷済, 9:キャンセル）
     * items : 注文の商品のリスト
         * editKey [string] : 作品キー取得 APIにて発行したキーを指定してください。
-        * title [string] : 編集データにある作品のタイトルを返します。
+        * title [string] : 作品のタイトルを返します。
         * copy [number] : 注文された冊数を返します。
-    * delivery : 注文の配送先のリスト
+        * unitPrice [number] : 作品の単価(決済を行わない場合は0を返します)。
+        * totalPrice [number] : 作品の合計(決済を行わない場合は0を返します)。
+    * amount [number] : 請求合計金額を返します(決済を行わない場合は0を返します)。
+    * billingItems : 請求項目要素（決済を行わない場合は空になります）
+        * billingItem [string] : 請求項目名。
+        * amount [number] : 請求項目の金額。
+    * paymentType [string (20)] : 支払い方法。
+    * delivery : 注文の配送先の要素
         * familyName [string] : お届け先のお名前（姓）。
         * firstName [string] : お届け先のお名前（名）。
         * zipCode [string] : お届け先の郵便番号。
@@ -721,8 +1307,8 @@ HTTP ステータスコードとともに結果を返します。
         * addressLine2(任意) [string] : お届け先の建物名。
         * company(任意) [string] : お届け先の会社名。
         * telephone [string] : お届け先の電話番号(ハイフンなしでもOK)。
-        * shipDueDate [date] : 出荷予定日(注文ステータスが、2:注文確定, 4:出荷済の場合のみに返します)
-
+        * shipDueDate [string] : 出荷予定日。
+        * shippingNo [string] : 配送伝票番号。
 
 ※ 注文受付から24時間以内には、注文確定となり出荷予定日が決まります。
 
@@ -755,3 +1341,6 @@ HTTP ステータスコードとともに結果を返します。
     ],...
 }
 ```
+
+---
+
