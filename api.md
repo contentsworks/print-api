@@ -1,4 +1,4 @@
-# Photobook API仕様 ver 1.1.0
+# Photobook API仕様 ver 1.2.0
 
 Photobook APIの開発者向けのドキュメントです。
 
@@ -9,17 +9,21 @@ Photobook APIの開発者向けのドキュメントです。
 ## API一覧
 ### 認証
 * [認証 API](#認証-api)
+* [ワンタイムチケット取得 API](#ワンタイムチケット取得-api)
 
 ### 編集
 * [商品情報取得 API](#商品情報取得-api)
 * [作品作成開始 作品キー取得 API](#作品作成開始-作品キー取得-api)
-* [テキスト登録/更新 API](#テキスト登録更新-api)
+* [テキスト登録/更新 API](#テキスト登録/更新-api)
 * [テキスト取得 API](#テキスト取得-api)
 * [画像アップロード API](#画像アップロード-api) ...画像のアップロードのみでエリアには配置しない
-* [画像アップロード/更新 API](#画像アップロード更新-api) ...アップロード画像をエリアにダイレクトに配置
-* [画像配置/更新 API](#画像配置更新-api) ...アップロード済の画像をエリアに配置
+* [画像アップロード/更新 API](#画像アップロード/更新-api) ...アップロード画像をエリアにダイレクトに配置
+* [画像配置/更新 API](#画像配置/更新-api) ...アップロード済の画像をエリアに配置
 * [画像アップロード取消 API](#画像アップロード取消-api)
 * [アップロード画像取得 API](#アップロード画像取得-api)
+* [アップロード済画像一覧取得 API](#アップロード済画像一覧取得-api)
+* [アップロード済画像取得 API](#アップロード済画像取得-api)
+* [画像配置情報取得 API](#画像配置情報取得-api)
 * [編集アイテム一覧取得 API](#編集アイテム一覧取得-api)
 * [プレビュー取得 API](#プレビュー取得-api)
 * [編集アイテム検証 API](#編集アイテム検証-api)
@@ -30,10 +34,10 @@ Photobook APIの開発者向けのドキュメントです。
 * [カート 作品数量変更 API](#カート-作品数量変更-api)
 * [カート 作品情報取得 API](#カート-作品情報取得-api)
 * [カート 作品削除 API](#カート-作品削除-api)
-* [カート お届け先情報登録/更新 API](#カート-お届け先情報登録更新-api)
+* [カート お届け先情報登録/更新 API](#カート-お届け先情報登録/更新-api)
 * [カート お届け先情報取得 API](#カート-お届け先情報取得-api)
 * [カート 請求情報取得 API](#カート-請求情報取得-api)
-* [カート お支払情報登録/更新 API](#カート-お支払情報登録更新-api)
+* [カート お支払情報登録/更新 API](#カート-お支払情報登録/更新-api)
 * [カート お支払情報取得 API](#カート-お支払情報取得-api)
 * [カート 注文情報確認 API](#カート-注文情報確認-api)
 
@@ -67,11 +71,18 @@ Content-Type: application/x-www-form-urlencoded
 ```
 #### ***x-www-form-urlencoded***
 下記パラメータをリクエストボディにapplication/x-www-form-urlencoded形式で指定します。
+##### ***username+passwordでの認証の場合***
 API側では、作成ユーザーをusernameにて識別します。 トークンを取得する時は同一のusername、passwordを使用してください。
 
 * grant_type [string]　: password固定
 * username [string]　: client_id内で一意となる作成ユーザー識別文字列
 * password(任意) [string]　: 作成ユーザーのパスワード。設定することを推奨します
+
+##### ***リフレッシュトークンでの認証の場合***
+認証APIで取得した refresh_token または ワンタイムチケット取得APIで取得した ticket を使用してください。
+
+* grant_type [string]　: refresh_token固定
+* refresh_token [string]　: 認証APIで取得したrefresh_token または ワンタイムチケット取得APIで取得したticket
 
 #### ***Response (status code)***
 
@@ -85,12 +96,14 @@ API側では、作成ユーザーをusernameにて識別します。 トーク�
 {
     "access_token": "tc8lOyNW1Vsqx1EwXNUML6YdFJptCLblKR_sKfU2ClkikNpK3K9mK6s",
     "token_type": "bearer",
-    "expires_in": 3599
+    "expires_in": 3599,
+    "refresh_token": "a7949da3309848368e27b51b6039841f"
 }
 ```
 * access_token [string]　: 弊社サーバーが発行するアクセストークン
 * token_type [string]　: トークンタイプ(bearer)
 * expires_in [int]　: アクセストークンの有効期間を表す秒数
+* refresh_token [string]　: 弊社サーバーが発行するリフレッシュトークン
 
 #### ***Response (Bad Request)***
 ```
@@ -157,6 +170,31 @@ HTTP ステータスコードとともに結果を返します。
  * errorCode [string] : エラーコード
  * message [string] : エラーメッセージ
  * moreInfo [string] : エラーの場所を示す詳細な情報
+
+---
+## ワンタイムチケット取得 API
+アプリ－Webサイト間などで認証を引き継ぐ必要がある場合、ワンタイムチケットを使用し認証を引き継ぐことが可能です。
+呼び出しの際は、Authorizationリクエストヘッダにアクセストークンを指定します。
+ワンタイムチケットは、有効期限の短いリフレッシュトークンです。認証APIの「リフレッシュトークンでの認証」を使用してアクセストークンを取得してください。
+
+### ***Method*** : GET
+### ***Url*** : /v1/tickets
+### ***Request***
+なし
+
+### ***Response***
+
+```
+{
+    "ticket": "2ed2b8fcc3454757bd26facf6627dc999ed3b31d2f9848e4be7b43ac38660239",
+    "expires_in": 300
+}
+```
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|OK。成功|-|
+
 
 ---
 ## データモデルについて
@@ -415,7 +453,7 @@ HTTP ステータスコードとともに結果を返します。
     "imageId":"2-158-4-528-20160209191142-277116579"
 }
 ```
-* imageId : アップロードした画像を識別するID
+* imageId [string] : アップロードした画像を識別するID
 
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -462,7 +500,7 @@ HTTP ステータスコードとともに結果を返します。
     "imageId":"2-158-4-528-20160209191142-277116579"
 }
 ```
-* imageId : アップロードした画像を識別するID
+* imageId [string] : アップロードした画像を識別するID
 
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -495,6 +533,7 @@ HTTP ステータスコードとともに結果を返します。
 ### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}
 ### ***QueryString***
 * imageId : 配置する画像の画像IDを指定してください。画像IDは画像アップロードAPIの戻り値として取得します。
+* rotate : 画像の回転角度。0, 90, 180, 270のみ指定可。
 
 ### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
@@ -507,7 +546,7 @@ HTTP ステータスコードとともに結果を返します。
     "imageId":"2-158-4-528-20160209191142-277116579"
 }
 ```
-* imageId : アップロードした画像を識別する画像ID。QueryStringで指定したものと同じIDが返ります。
+* imageId [string] : アップロードした画像を識別する画像ID。QueryStringで指定したものと同じIDが返ります。
 
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -563,7 +602,6 @@ HTTP ステータスコードとともに結果を返します。
     ]
 }
 ```
-
 ---
 ## アップロード画像取得 API
 ### ***Method*** : GET
@@ -579,6 +617,8 @@ HTTP ステータスコードとともに結果を返します。
 * areaID : 取得したいテキストエリアのIDを指定してください。
 
 ### ***Response***
+* image : アップロードした画像(jpg)。
+
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|成功|-|
@@ -586,6 +626,62 @@ HTTP ステータスコードとともに結果を返します。
 |404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
 |404 (Not Found)|ファイルが存在しません。|notfound_file|
 
+---
+## アップロード済画像一覧取得 API
+### ***Method*** : GET
+### ***Url*** : /v1/{editKey}/images/
+### ***Request***
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+
+### ***Response***
+```
+{
+	"images":[
+    	{
+        	"imageId":"2-158-4-528-20160209191142-277116579"
+        },
+        {
+        	"imageId":"2-158-4-528-20160201456546-678855441"
+        },...
+    ]
+}
+
+```
+* imageId [string]: アップロードした画像を識別する画像ID。
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+```
+【エラーの例】
+{
+    "errors": [
+        {
+            "errorCode": "notacceptable_editkey",
+            "message": "指定されたeditKeyが見つかりません。",
+            "moreInfo": "editKey:123456789"
+        },...
+    ]
+}
+```
+---
+## アップロード済画像取得 API
+### ***Method*** : GET
+### ***Url*** : /v1/{editKey}/images/{imageId}
+### ***Request***
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+* imageId : アップロードした画像を識別する画像ID。
+
+### ***Response***
+imageIdで指定されたアップロード済画像(jpg)データを返します(バイナリ形式)。
+
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|404 (Not Found)|ファイルが存在しません。|notfound_file|
+|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
 ```
 【エラーの例】
 {
@@ -593,16 +689,41 @@ HTTP ステータスコードとともに結果を返します。
         {
             "errorCode": "notfound_file",
             "message": "ファイルが存在しません。",
-            "moreInfo": "page=7,areaID=PHOTO01"
+            "moreInfo": "imageId:2-158-4-528-20160209191142-277116579"
         },...
     ]
 }
 ```
 ---
+## 画像配置情報取得 API
+### ***Method*** : GET
+### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}/layouts
+### ***Request***
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+* pageNo : ページ番号を指定してください。
+* areaID : 取得したいテキストエリアのIDを指定してください。
+
+### ***Response***
+```
+{
+	"imageId" : "2-158-4-528-20160209191142-277116579",
+    "rotate" : 90
+}
+```
+* imageId [string] : アップロードした画像を識別する画像ID。
+* rotate [number] : 画像の回転角度。
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|404 (Not Found)|存在しないページが指定されました。|notfound_page|
+|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
+|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+
+---
 ## 編集アイテム一覧取得 API
 ### ***Method*** : GET
 ### ***Url*** : /v1/edit-items/
-
 ### ***Response***
 ```
 {
@@ -663,7 +784,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
 ### ***Method*** : GET
 ### ***Url*** : /v1/{editKey}/validate/
 ### ***Request***
- * editKey [string] : 作成する作品を識別するためのキーです。
+ * editKey : 作成する作品を識別するためのキーです。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -728,8 +849,6 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
 ## カート 開始 API
 ### ***Method*** : POST
 ### ***Url*** : /v1/carts
-### ***Request***
-カートを使用する際に必要な cartNo を取得します。
 
 ### ***Response***
 ```
@@ -826,6 +945,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
 |200 (OK)|OK。成功|-|
 |406 (Not Acceptable)|存在しないcartNoが指定されました。|notacceptable_cartno|
 |406 (Not Acceptable)|存在しないeditkeyが指定されました。|notacceptable_editkey|
+|406 (Not Acceptable)|冊数が指定されていません。|require_copy|
 
 ---
 ## カート 作品削除 API
@@ -923,7 +1043,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
     * firstName [string] : お届け先のお名前（名）。
     * zipCode [string] : お届け先の郵便番号。
     * province [string] : お届け先の都道府県。
-    * city [string] : お届け先の市区郡。
+    * city(任意) [string] : お届け先の市区郡。
     * addressLine1 [string] : お届け先の町村番地。
     * addressLine2(任意) [string] : お届け先の建物名。
     * company(任意) [string] : お届け先の会社名。
@@ -990,7 +1110,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
     * cardNumber [string (16)] : クレジットカードの番号。
     * expireMonth [string (2)] : 有効期限の月(MM形式)。
     * expireYear [string (2)] : 有効期限の年(YY形式)。
-    * securityCode [string (3)] : セキュリティコード。
+    * securityCode [string] : セキュリティコード。3、4桁のみ
     * name [string] : クレジットカードの名義。  
     ※印字されているアルファベットを半角英字で指定。
 
@@ -1035,7 +1155,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
     * cardNumber [string (16)] : クレジットカードの番号。
     * expireMonth [string (2)] : 有効期限の月(MM形式)。
     * expireYear [string (2)] : 有効期限の年(YY形式)。
-    * securityCode [string (3)] : セキュリティコード。
+    * securityCode [string] : セキュリティコード。3、4桁のみ
     * name [string (3)] : クレジットカードの名義。
 
 ---
@@ -1127,7 +1247,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
         * cardNumber [string (16)] : クレジットカードの番号。
         * expireMonth [string (2)] : 有効期限の月(MM形式)。
         * expireYear [string (2)] : 有効期限の年(YY形式)。
-        * securityCode [string (3)] : セキュリティコード。
+        * securityCode [string] : セキュリティコード。
         * name [string (3)] : クレジットカードの名義。
     * delivery : 注文の配送先の要素
         * familyName [string] : お届け先のお名前（姓）。
