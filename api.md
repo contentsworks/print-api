@@ -1,4 +1,4 @@
-# Photobook API仕様 ver 1.2.0
+# Photobook API仕様 ver 1.2.2
 
 Photobook APIの開発者向けのドキュメントです。
 
@@ -19,12 +19,14 @@ Photobook APIの開発者向けのドキュメントです。
 * [画像アップロード API](#画像アップロード-api) ...画像のアップロードのみでエリアには配置しない
 * [画像アップロード/更新 API](#画像アップロード/更新-api) ...アップロード画像をエリアにダイレクトに配置
 * [画像配置/更新 API](#画像配置/更新-api) ...アップロード済の画像をエリアに配置
+* [画像流し込み配置/更新 API](#画像流し込み配置/更新-api) ...アップロード済みの画像を一括指定で一括配置
 * [画像アップロード取消 API](#画像アップロード取消-api)
 * [アップロード画像取得 API](#アップロード画像取得-api)
 * [アップロード済画像一覧取得 API](#アップロード済画像一覧取得-api)
 * [アップロード済画像取得 API](#アップロード済画像取得-api)
 * [画像配置情報取得 API](#画像配置情報取得-api)
 * [編集アイテム一覧取得 API](#編集アイテム一覧取得-api)
+* [アップロード済画像削除 API](#アップロード済画像削除-api)
 * [プレビュー取得 API](#プレビュー取得-api)
 * [編集アイテム検証 API](#編集アイテム検証-api)
 
@@ -45,6 +47,7 @@ Photobook APIの開発者向けのドキュメントです。
 * [注文確定 API](#注文確定-api)
 * [注文情報取得 API](#注文情報の取得-api)
 * [注文キャンセル API](#注文キャンセル-api)
+* [仮注文更新 API](#仮注文更新-api)
 
 ---
 ## 認証 API
@@ -97,12 +100,12 @@ API側では、作成ユーザーをusernameにて識別します。 トーク�
     "access_token": "tc8lOyNW1Vsqx1EwXNUML6YdFJptCLblKR_sKfU2ClkikNpK3K9mK6s",
     "token_type": "bearer",
     "expires_in": 3599,
-    "refresh_token": "a7949da3309848368e27b51b6039841f"
+    "refresh_token": "a7949da3309848368e27b51b6039841f",
 }
 ```
 * access_token [string]　: 弊社サーバーが発行するアクセストークン
 * token_type [string]　: トークンタイプ(bearer)
-* expires_in [int]　: アクセストークンの有効期間を表す秒数
+* expires_in [number]　: アクセストークンの有効期間を表す秒数
 * refresh_token [string]　: 弊社サーバーが発行するリフレッシュトークン
 
 #### ***Response (Bad Request)***
@@ -337,11 +340,13 @@ HTTP ステータスコードとともに結果を返します。
 ```
 {
     "editKey": "3800604642207821313",
+    "userId": "123",
     "expireDate": "2016/1/1"
 }
 ```
 
 * editKey [string] : 作成する作品を識別するためのキーです。
+* userId [number] : 現在の認証ユーザーを識別するIDです。
 * expireDate [datetime] : 作成する作品の編集期限です。発行日を基準にして+7日となります。例）2016/1/1に取得→2016/1/8
 
 
@@ -573,6 +578,56 @@ HTTP ステータスコードとともに結果を返します。
 }
 ```
 ---
+## 画像流し込み配置/更新 API
+画像のエリアへの配置を一括で行います。  
+
+### ***Method*** : PUT
+### ***Url*** : /v1/{editKey}/images/autoset
+### ***Request***
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+
+### ***Request Body***
+配置する画像ファイルを指定してください。
+
+### ***Response***
+
+```
+images [
+    {
+        "imageId":"2-158-4-528-20160209191142-277116579",
+        "rotate": "90"
+    },...
+]
+```
+* imageId [string] : アップロードした画像を識別する画像ID。
+* rotate [int] : 画像回転角度。
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|400 (Bad Request)|配置更新画像が見つかりません。(POSTされたJSONに問題がある場合)。|notfound_inputdata|
+|400 (Bad Request)|画像を読み込めませんでした。画像が壊れているか、画像に対応しておりません。|invalid_file|
+|404 (Not Found)|存在しないページが指定されました。|notfound_page|
+|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
+|406 (Not Acceptable)|指定されたEditKeyが見つかりません。|notacceptable_editkey|
+|406 (Not Acceptable)|指定されたEditKeyが見つかりません。(注文済の作品は編集できません))|notacceptable_editkey|
+|413 (Request Entity Too Large)|ファイルサイズが大きすぎます。|toolarge_file|
+|415 (Unsupported Media Type)|ファイル形式が不明です。|unsupported_file|
+|416 (Requested Range Not Satisfiable)|ファイルの幅が小さすぎます。|tooshort_width|
+|416 (Requested Range Not Satisfiable)|ファイルの高さが小さすぎます。|tooshort_height|
+```
+【エラーの例】
+{
+    "errors": [
+        {
+            "errorCode": "unsupported_file",
+            "message": "ファイル形式が不明です。",
+            "moreInfo": "ご利用できる画像ファイル形式はjpeg（jpg）のみです。"
+        },...
+    ]
+}
+```
+---
 ## 画像アップロード取消 API
 ### ***Method*** : POST
 ### ***Header*** : X-HTTP-Method-Override=DELETE
@@ -630,10 +685,45 @@ HTTP ステータスコードとともに結果を返します。
 ## アップロード済画像一覧取得 API
 ### ***Method*** : GET
 ### ***Url*** : /v1/{editKey}/images/
+### ***QueryString***
+* order : 画像のソート順を指定してください。
+ + page : ページ(＆エリア)順にソート
+ + upload(defalut) : アップロード順にソート
+* detail : 結果の返却方法を指定してください。
+ + true : 詳細モード
+ + false(default) : 簡略モード
+
 ### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 
 ### ***Response***
+#### 詳細モード
+```
+{
+	"images":[
+    	{
+        	"imageId":"2-158-4-528-20160209191142-277116579",
+        	"page": "0",
+        	"areaId": "PHOTO01",
+        	"rotate": "90"
+        },
+        {
+        	"imageId":"2-158-4-528-20160201456546-678855441",
+        	"page": "",
+        	"areaId": "",
+        	"rotate": ""
+        },...
+    ]
+}
+
+```
+※未配置画像の場合は、"page""areaId""rotate"は空となる。
+* imageId [string]: アップロードした画像を識別する画像ID。
+* page [int]: ページ番号。
+* areaId [string]: 配置されているテキストエリアのID。
+* rotate [int]: 画像の回転角度。
+
+#### 簡略モード
 ```
 {
 	"images":[
@@ -653,6 +743,7 @@ HTTP ステータスコードとともに結果を返します。
 |:-----------|:------------|:------------|
 |200 (OK)|成功|-|
 |406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+|406 (Not Acceptable)|指定されたorderが不正です。|notacceptable_order|
 ```
 【エラーの例】
 {
@@ -721,6 +812,36 @@ imageIdで指定されたアップロード済画像(jpg)データを返しま�
 |406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
 
 ---
+
+## アップロード済画像削除 API
+### ***Method*** : POST
+### ***Header*** : X-HTTP-Method-Override=DELETE
+### ***Url*** : /v1/{editKey}/images/{imageId}/
+### ***Request***
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+* imageId : 配置する画像の画像IDを指定してください。画像IDは画像アップロードAPIの戻り値として取得します。
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|404 (Not Found)|ファイルが存在しません。|notfound_file|
+|406 (Not Acceptable)|指定されたimageIdが見つかりません。|notacceptable_imageId|
+|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+
+```
+【エラーの例】
+{
+    "errors": [
+        {
+            "errorCode": "notacceptable_editkey",
+            "message": "指定されたeditKeyが見つかりません。",
+            "moreInfo": "editKey : 1234567890"
+        },...
+    ]
+}
+```
+---
 ## 編集アイテム一覧取得 API
 ### ***Method*** : GET
 ### ***Url*** : /v1/edit-items/
@@ -734,6 +855,7 @@ imageIdで指定されたアップロード済画像(jpg)データを返しま�
       "title": "taitoruA",
       "isOrdered": true,
       "itemPrice": 3600,
+      "maxOrderCopy": 100,
       "expirationDate": "2016/03/10",
       "lastEditTime": "2016-02-25T14:14:03.463",
       "createTime": "2016-02-25T10:25:50.403"
@@ -747,6 +869,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
 * title  [string] : 編集データにある作品のタイトル
 * isOrdered [bool] : 注文の有無。trueの場合注文済、falseの場合未注文の作品であることを表します
 * itemPrice [number] : アイテムの販売価格(税込)
+* maxOrderCopy [number] : 作品の最大購入可能冊数
 * expirationDate [datetime] : editKeyの有効期限です。有効期限を超過すると注文や編集はできません
 * lastEditTime [datetime] : 編集データの最終更新日
 * createTime [datetime] : editKeyの生成日
@@ -883,14 +1006,16 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
             "title": "写真日記（１）",
             "copy": 2,
             "unitPrice": 1500,
-            "totalPrice": 3000
+            "totalPrice": 3000,
+            "maxOrderCopy": 100
         },
         {
             "editKey": "8207160303711806465",
             "title": "写真日記（２）",
             "copy": 3,
             "unitPrice": 1200,
-            "totalPrice": 3600
+            "totalPrice": 3600,
+            "maxOrderCopy": 10
         }, ...
 }
 ```
@@ -900,6 +1025,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
  * copy [number] : 注文する作品の冊数。
  * unitPrice [number] : 作品の単価(決済を行わない場合は0を返します)。
  * totalPrice [number] : 作品の合計(決済を行わない場合は0を返します)。
+ * maxOrderCopy [number] : 作品の最大購入可能冊数。
 
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -937,7 +1063,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
 ```
 
 * copy [number] : 注文する作品の冊数。
-※ 一回の注文での最大冊数は、100冊までです。
+※ 一回の注文での最大冊数は、作品ごとに決まっておりデフォルトでは最大100冊までです。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -946,6 +1072,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
 |406 (Not Acceptable)|存在しないcartNoが指定されました。|notacceptable_cartno|
 |406 (Not Acceptable)|存在しないeditkeyが指定されました。|notacceptable_editkey|
 |406 (Not Acceptable)|冊数が指定されていません。|require_copy|
+|406 (Not Acceptable)|最大購入可能冊数を超過しました。|exceeded_copylimit|
 
 ---
 ## カート 作品削除 API
@@ -1293,7 +1420,8 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
     * editKey [string] : 作品キー取得 APIにて発行したキーを指定してください。  
 ※ 注文日を基準にしてeditKeyの有効期限が+14日となります。例）2016/1/1に注文→2016/1/15
     * copy [number] : 注文する作品の冊数。  
-※ 一回の注文での最大冊数は、100冊までです。
+※ 一回の注文での最大冊数は、作品ごとに決まっておりデフォルトでは最大100冊までです。
+※ 注文単位での最大冊数は100冊です。
 
 * delivery
     * familyName [string (25)] : お届け先のお名前（姓）。
@@ -1317,14 +1445,17 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
 |406 (Not Acceptable)|商品が設定されていません。|require_item|
 |406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
 |406 (Not Acceptable)|データ検証でエラーが見つかりました。(文字数制限、必須チェック、冊数チェックなど)|validate_failed|
+|406 (Not Acceptable)|最大購入可能冊数を超過しました。|exceeded_copylimit|
 
 ```
 【成功時の例】
 {
     "orderNo": "CWIP-90123456",
+    "userId" : "123"
 }
 ```
 * orderNo [string] : 注文を識別する一意の番号
+* userId [number]　: 現在の認証ユーザーを識別するID
 
 ```
 【エラーの例】
@@ -1334,6 +1465,11 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
             "errorCode": "notacceptable_cartno",
             "message": "有効期限が過ぎています。",
             "moreInfo": "CartNo:6302524379815465985"
+        },
+        {
+            "errorCode": "exceeded_copylimit",
+            "message": "最大購入可能冊数を超過しました。",
+            "moreInfo": "editKey:6562980850240564225,maxOrderCopy:5"
         }
     ],...
 }
@@ -1360,6 +1496,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
             "orderNo" : "CWIP-90123456",
             "orderDateTime" : "2017/1/1 00:00:00",
             "status" : 2,
+            "tempOrderLimitDate" : "2017/1/15 00:00:00",
             "items" : [
                 {
                     editKey : "3800604642207821313",
@@ -1405,6 +1542,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
     * orderNo [string] : 注文を管理するための番号です。
     * orderDateTime [string] : 注文日時間。
     * status [number] : 注文のステータス（1:注文受付, 2:注文確定, 3:注文保留, 4:出荷済, 9:キャンセル）
+    * tempOrderLimitDate [string] : 仮注文を確定注文にすることがでる期限
     * items : 注文の商品のリスト
         * editKey [string] : 作品キー取得 APIにて発行したキーを指定してください。
         * title [string] : 作品のタイトルを返します。
@@ -1462,4 +1600,41 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
 ```
 
 ---
+## 仮注文更新 API
+### ***Method*** : POST
+### ***Header*** : X-HTTP-Method-Override=PUT
+### ***Url*** : /v1/orders/{orderNo}
+### ***Request***
+* orderNo [string] : 注文確定 APIにて発行したOrderNoをご指定下さい。(CWIP-90123456の形式)  
 
+---
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|404 (Not Found)|指定された注文が見つかりません。|notfound_order|
+|406 (Not Acceptable)|更新期限が過ぎています。|not_cancel|
+|406 (Not Acceptable)|既にキャンセルされています。|is_canceled|
+|406 (Not Acceptable)|確定済みの注文です。|invalid_status|
+
+```
+【成功時の例】
+{
+    "orderNo": "CWIP-90123456",
+}
+```
+* orderNo [string] : 注文を識別する一意の番号
+
+```
+【エラーの例】
+{
+    "errors": [
+        {
+            "errorCode": "notfound_order",
+            "message": "指定された注文が見つかりません。",
+            "moreInfo": "OrderNo": "CWIP-90123456"
+        }
+    ],...
+}
+```
+---
