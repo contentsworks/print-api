@@ -1,4 +1,4 @@
-# Photobook API仕様 ver 1.2.2
+# Photobook API仕様 ver 1.2.3
 
 Photobook APIの開発者向けのドキュメントです。
 
@@ -1191,7 +1191,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
 
 ```
 {
-    "amount" : 5000,
+    "amount" : 4000,
     "billingItems" : [
         {
             "billingItem" : "商品代金",
@@ -1201,6 +1201,17 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
             "billingItem" : "配送料",
             "amount" : 500
         }, ...
+    ],
+    "discount" : -1000,
+    "discountItems" : [
+        {
+            "discountRuleCode" : "ボリュームディスカウント",
+            "discountPrice" : -600
+        },
+        {
+            "discountRuleCode" : "送料無料",
+            "discountPrice" : -400
+        }, ...
     ]
 }
 ```
@@ -1209,6 +1220,10 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
 * billingItems : 請求項目要素
     * billingItem [string] : 請求項目。
     * amount [number] : 請求項目の金額。
+* discount [number] : 割引合計金額
+* discountItems : 割引要素
+    * discountRuleCode [string] : 割引名。
+    * discountPrice [number] : 割引の金額。
 
 ---
 ## カート お支払情報登録/更新 API
@@ -1319,7 +1334,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
                 "totalPrice" : 3600
             }, ...
         ],
-        "amount" : 7100,
+        "amount" : 6100,
         "billingItems" : [
             {
                 "billingItem" : "商品代金",
@@ -1350,7 +1365,18 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
             "addressLine2" : "Daiwa神保町ビル5F",
             "company" : "コンテンツワークス株式会社",
             "telephone" : "03-6674-2250"
-        }
+        },
+        "discount" : -1000,
+        "discountItems" : [
+            {
+                "discountRuleCode" : "ボリュームディスカウント",
+                "discountPrice" : -600
+            },
+            {
+                "discountRuleCode" : "送料無料",
+                "discountPrice" : -400
+            }, ...
+        ]
     }
 }
 ```
@@ -1386,6 +1412,10 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
         * addressLine2(任意) [string] : お届け先の建物名。
         * company(任意) [string] : お届け先の会社名。
         * telephone [string] : お届け先の電話番号(ハイフンなしでもOK)。
+    * discount [number] : 割引合計金額を返します。
+    * discountItems : 割引要素
+        * discountRuleCode [string] : 割引名。
+        * discountPrice [number] : 割引の金額。
 
 ---
 ## 注文確定 API
@@ -1506,7 +1536,7 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
                     totalPrice : 16000
                 },...
             ],
-            "amount" : 16500,
+            "amount" : 15500,
         	"billingItems" : [
                 {
                     "billingItem" : "商品代金",
@@ -1532,6 +1562,17 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
                 "shipDueDate" : "2017/1/1",
                 "shippingNo" : "9876543210"
             },...
+            "discount" : -1000
+            "discountItems" : [
+                {
+                    "discountRuleCode" : "ボリュームディスカウント",
+                    "discountPrice" : -600
+                },
+                {
+                    "discountRuleCode" : "送料無料",
+                    "discountPrice" : -400
+                }, ...
+            ]
         },...
     ],...
 }
@@ -1566,6 +1607,10 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
         * telephone [string] : お届け先の電話番号(ハイフンなしでもOK)。
         * shipDueDate [string] : 出荷予定日。
         * shippingNo [string] : 配送伝票番号。
+    * discount [number] : 割引合計金額を返します。
+	* discountItems : 割引要素
+    	* discountRuleCode [string] : 割引名。
+    	* discountPrice [number] : 割引の金額。
 
 ※ 注文受付から24時間以内には、注文確定となり出荷予定日が決まります。
 
@@ -1638,3 +1683,4 @@ editKeyが有効期限内の編集アイテムのみ抽出します。
 }
 ```
 ---
+
