@@ -983,6 +983,35 @@ editKeyを指定した場合、指定したアイテムのみ返します。
         * message [string] : Errorの内容
 
 ---
+## 編集アイテム削除 API
+### ***Method*** : DELETE
+### ***Url*** : /v1/edit-items/{editKey}
+### ***Request***
+ * editKey : 作成する作品を識別するためのキーです。
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+|406 (Not Acceptable)|指定されたEditKeyが見つかりません。(注文済の作品は編集できません)|notfound_editkey|
+|406 (Not Acceptable)|指定されたeditKeyは削除済みです|deleted_editkey|
+|406 (Not Acceptable)|指定されたeditKeyは編集確定済みです|fixed_editkey|
+
+```
+【エラーの例】
+{
+    "errors": [
+        {
+            "errorCode": "notacceptable_editkey",
+            "message": "指定されたeditKeyが見つかりません。",
+            "moreInfo": "editKey : 1234567890"
+        },...
+    ]
+}
+```
+
+---
 ## カート 開始 API
 ### ***Method*** : POST
 ### ***Url*** : /v1/carts
