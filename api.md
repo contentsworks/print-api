@@ -589,7 +589,7 @@ HTTP ステータスコードとともに結果を返します。
 ```
 ---
 ## 画像流し込み配置/更新 API
-画像のエリアへの配置を一括で行います。  
+アップロードされた画像をエリアへ一括配置します。  
 
 ### ***Method*** : PUT
 ### ***Url*** : /v1/{editKey}/images/autoset
@@ -597,10 +597,6 @@ HTTP ステータスコードとともに結果を返します。
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 
 ### ***Request Body***
-配置する画像ファイルを指定してください。
-
-### ***Response***
-
 ```
 images [
     {
@@ -611,6 +607,10 @@ images [
 ```
 * imageId [string] : アップロードした画像を識別する画像ID。
 * rotate [int] : 画像回転角度。
+
+
+### ***Response***
+
 
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -821,36 +821,6 @@ imageIdで指定されたアップロード済画像(jpg)データを返しま�
 |404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
 |406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
 
----
-
-## アップロード済画像削除 API
-### ***Method*** : POST
-### ***Header*** : X-HTTP-Method-Override=DELETE
-### ***Url*** : /v1/{editKey}/images/{imageId}/
-### ***Request***
-* editKey : 作品キー取得 APIにて発行したキーを指定してください。
-* imageId : 配置する画像の画像IDを指定してください。画像IDは画像アップロードAPIの戻り値として取得します。
-
-### ***Response***
-| ステータスコード | 意味|エラーコード|
-|:-----------|:------------|:------------|
-|200 (OK)|成功|-|
-|404 (Not Found)|ファイルが存在しません。|notfound_file|
-|406 (Not Acceptable)|指定されたimageIdが見つかりません。|notacceptable_imageId|
-|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
-
-```
-【エラーの例】
-{
-    "errors": [
-        {
-            "errorCode": "notacceptable_editkey",
-            "message": "指定されたeditKeyが見つかりません。",
-            "moreInfo": "editKey : 1234567890"
-        },...
-    ]
-}
-```
 ---
 ## 編集アイテム一覧取得 API
 ### ***Method*** : GET
@@ -1219,7 +1189,7 @@ editKeyを指定した場合、指定したアイテムのみ返します。
     * firstName [string] : お届け先のお名前（名）。
     * zipCode [string] : お届け先の郵便番号。
     * province [string] : お届け先の都道府県。
-    * city(任意) [string] : お届け先の市区郡。
+    * city [string] : お届け先の市区郡。
     * addressLine1 [string] : お届け先の町村番地。
     * addressLine2(任意) [string] : お届け先の建物名。
     * company(任意) [string] : お届け先の会社名。
