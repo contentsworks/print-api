@@ -29,6 +29,7 @@ Photobook APIの開発者向けのドキュメントです。
 * [アップロード済画像削除 API](#アップロード済画像削除-api)
 * [プレビュー取得 API](#プレビュー取得-api)
 * [編集アイテム検証 API](#編集アイテム検証-api)
+* [編集アイテム削除 API](#編集アイテム削除-api)
 
 ### カート
 * [カート 開始 API](#カート-開始-api)
@@ -954,7 +955,8 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 
 ---
 ## 編集アイテム削除 API
-### ***Method*** : DELETE
+### ***Method*** : POST
+### ***Header*** : X-HTTP-Method-Override=DELETE
 ### ***Url*** : /v1/edit-items/{editKey}
 ### ***Request***
  * editKey : 作成する作品を識別するためのキーです。
