@@ -871,12 +871,13 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 ## プレビュー取得 API
 ### ***Method*** : GET
 ### ***Url*** : /v1/{editKey}/previews/{pageNo}
-### ***QueryString*** : ?areaId={areaID}&h={height}&w={width}
-* areaId  : 商品情報取得 APIで取得したareaIDを指定してください。  
+### ***QueryString*** : ?areaId={areaID}&h={height}&w={width}&frame={frame}
+* areaId[string]  : 商品情報取得 APIで取得したareaIDを指定してください。  
 ※指定したエリアを塗りつぶし、それ以外のエリアの色合いを薄くした画像を返します。
-* height  : 横幅を指定してください。
-* width  : 高さを指定してください。
+* height[int]  : 横幅を指定してください。
+* width[int]  : 高さを指定してください。  
 ※hかwのどちらかが指定した場合は、イメージの比率で拡縮された画像を返します。
+* frame[bool] : 配置されていない画像エリア、入力されていないテキストエリアすべてに色を付けます。
 
 ### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
