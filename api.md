@@ -410,7 +410,7 @@ HTTP ステータスコードとともに結果を返します。
         {
             "errorCode": "over_textlength",
             "message": "文字数がオーバーしました。",
-            "moreInfo": "pageNo=7,areaID=TEXT01,orverString=○○ です。"
+            "moreInfo": "pageNo=7,areaID=TEXT01-DEFAULT,overString=○○"
         },...
     ]
 }
