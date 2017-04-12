@@ -1,4 +1,4 @@
-# Photobook API仕様 ver 1.2.3
+# Photobook API仕様 ver 1.2.4
 
 Photobook APIの開発者向けのドキュメントです。
 
