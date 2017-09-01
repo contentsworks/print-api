@@ -287,6 +287,8 @@ HTTP ステータスコードとともに結果を返します。
                         "areaID": "JACKET",
                         "minWidth": 828,
                         "minHeight": 621,
+                        "cutting": [],
+                        "fitType": ""
                     }
                 ],
                 "texts": [
@@ -348,7 +350,9 @@ HTTP ステータスコードとともに結果を返します。
                     {
                         "areaID": "PHOTO",
                         "minWidth": 828,
-                        "minHeight": 621
+                        "minHeight": 621,
+                        "cutting": [],
+                        "fitType": ""
                     },...
                 ],
                 "texts": [
@@ -384,6 +388,8 @@ HTTP ステータスコードとともに結果を返します。
      * areaID [string] : page内で一意となる画像エリアID。
      * minWidth [number] : 最小のwidth(px)。
      * minHeight [number] : 最小のheight(px)。
+     * cutting [string] : エリアに含まれる断ち切り位置。
+     * fitType [string] : エリアに対しての写真の配置方法。
    * texts : ページのテキストエリア情報
      * areaID [string] : page内で一意となる画像エリアID。
      * maxLength [number] : エリアに入力できる最大の文字数。
@@ -522,6 +528,11 @@ editKeyを指定した場合、指定したアイテムのみ返します。
                         "areaID": "JACKET",
                         "minWidth": 828,
                         "minHeight": 621,
+                        "cutting": [
+                            "Top",
+                            "Right"
+                        ],
+                        "fitType": "LFit"
                     }
                 ],
                 "texts": [
@@ -550,7 +561,12 @@ editKeyを指定した場合、指定したアイテムのみ返します。
                     {
                         "areaID": "PHOTO",
                         "minWidth": 828,
-                        "minHeight": 621
+                        "minHeight": 621,
+                        "cutting": [
+                            "Top",
+                            "Right"
+                        ],
+                        "fitType": "LFit"
                     },...
                 ],
                 "texts": [
@@ -586,6 +602,8 @@ editKeyを指定した場合、指定したアイテムのみ返します。
      * areaID [string] : page内で一意となる画像エリアID。
      * minWidth [number] : 最小のwidth(px)。
      * minHeight [number] : 最小のheight(px)。
+     * cutting [string] : エリアに含まれる断ち切り位置。
+     * fitType [string] : エリアに対しての写真の配置方法。
    * texts : ページのテキストエリア情報
      * areaID [string] : page内で一意となる画像エリアID。
      * maxLength [number] : エリアに入力できる最大の文字数。
