@@ -1,4 +1,4 @@
-# Photobook API仕様 ver 1.2.4
+# Photobook API仕様 ver 1.2.5
 
 Photobook APIの開発者向けのドキュメントです。
 
@@ -14,24 +14,37 @@ Photobook APIの開発者向けのドキュメントです。
 ### 商品
 * [商品情報取得 API](#商品情報取得-api)
 * [作品作成開始 作品キー取得 API](#作品作成開始-作品キー取得-api)
+
+### 編集
+* [編集アイテム一覧取得 API](#編集アイテム一覧取得-api)
+* [編集アイテム削除 API](#編集アイテム削除-api)
+
+### ページ
+* [ページ取得 API](#ページ取得-api)
+
 ### テキスト
-* [テキスト登録/更新 API](#テキスト登録\更新-api)
+* [テキスト登録/更新 API](#テキスト登録更新-api)
 * [テキスト取得 API](#テキスト取得-api)
+
 ### 画像
 * [画像アップロード API](#画像アップロード-api) ...画像のアップロードのみでエリアには配置しない
-* [画像アップロード/更新 API](#画像アップロード\更新-api) ...アップロード画像をエリアにダイレクトに配置
-* [画像配置/更新 API](#画像配置\更新-api) ...アップロード済の画像をエリアに配置
-* [画像流し込み配置/更新 API](#画像流し込み配置\更新-api) ...アップロード済みの画像を一括指定で一括配置
-* [画像アップロード取消 API](#画像アップロード取消-api)
-* [アップロード画像取得 API](#アップロード画像取得-api)
 * [アップロード済画像一覧取得 API](#アップロード済画像一覧取得-api)
 * [アップロード済画像取得 API](#アップロード済画像取得-api)
-* [画像配置情報取得 API](#画像配置情報取得-api)
-* [編集アイテム一覧取得 API](#編集アイテム一覧取得-api)
 * [アップロード済画像削除 API](#アップロード済画像削除-api)
+
+### 画像配置
+* [アップロード画像取得 API](#アップロード画像取得-api)
+* [画像アップロード取消 API](#画像アップロード取消-api)
+* [画像アップロード/更新 API](#画像アップロード更新-api) ...アップロード画像をエリアにダイレクトに配置
+* [画像配置/更新 API](#画像配置更新-api) ...アップロード済の画像をエリアに配置
+* [画像配置情報取得 API](#画像配置情報取得-api)
+* [画像流し込み配置/更新 API](#画像流し込み配置更新-api) ...アップロード済みの画像を一括指定で一括配置
+
+### プレビュー
 * [プレビュー取得 API](#プレビュー取得-api)
+
+### チェック
 * [編集アイテム検証 API](#編集アイテム検証-api)
-* [編集アイテム削除 API](#編集アイテム削除-api)
 
 ### カート
 * [カート 開始 API](#カート-開始-api)
@@ -39,12 +52,12 @@ Photobook APIの開発者向けのドキュメントです。
 * [カート 作品数量変更 API](#カート-作品数量変更-api)
 * [カート 作品情報取得 API](#カート-作品情報取得-api)
 * [カート 作品削除 API](#カート-作品削除-api)
-* [カート お届け先情報登録/更新 API](#カート-お届け先情報登録\更新-api)
+* [カート お届け先情報登録/更新 API](#カート-お届け先情報登録更新-api)
 * [カート お届け先情報取得 API](#カート-お届け先情報取得-api)
-* [カート 差出人情報登録/更新 API](#カート-差出人情報登録\更新-api)
+* [カート 差出人情報登録/更新 API](#カート-差出人情報登録更新-api)
 * [カート 差出人情報取得 API](#カート-差出人情報取得-api)
 * [カート 請求情報取得 API](#カート-請求情報取得-api)
-* [カート お支払情報登録/更新 API](#カート-お支払情報登録\更新-api)
+* [カート お支払情報登録/更新 API](#カート-お支払情報登録更新-api)
 * [カート お支払情報取得 API](#カート-お支払情報取得-api)
 * [カート 注文情報確認 API](#カート-注文情報確認-api)
 
@@ -61,9 +74,9 @@ Photobook APIの開発者向けのドキュメントです。
 * [カレンダー カテゴリー取得 API](#カレンダー-カテゴリー取得-api)
 * [カレンダー カラー取得 API](#カレンダー-カラー取得-api)
 * [カレンダー イベント取得 API](#カレンダー-イベント取得-api)
-* [カレンダー イベント登録/更新 API](#カレンダー-イベント登録\更新-api)
+* [カレンダー イベント登録/更新 API](#カレンダー-イベント登録更新-api)
 * [カレンダー イベント削除 API](#カレンダー-イベント削除-api)
-* [固定お届け先取得 API](#固定お届け先取得-api)
+* [固定お届け先情報取得 API](#固定お届け先情報取得-api)
 
 ---
 ## 認証 API
@@ -282,18 +295,48 @@ HTTP ステータスコードとともに結果を返します。
                         "maxLength": 20,
                         "maxLineLength": 20,
                         "maxLineCount": 1
+                        "colors": [
+                            {
+                                "name": "Red",
+                                "rgb": "FFFFFF"
+                            },
+                            {
+                                "name": "Blue",
+                                "rgb": "0000FF"
+                            },...
+                        ]
                     },
                     {
                         "areaID": "TITLE-SUBTITLE",
                         "maxLength": 40,
                         "maxLineLength": 40,
                         "maxLineCount": 1
+                        "colors": [
+                            {
+                                "name": "Red",
+                                "rgb": "FFFFFF"
+                            },
+                            {
+                                "name": "Blue",
+                                "rgb": "0000FF"
+                            },...
+                        ]
                     },
                     {
                         "areaID": "TITLE-TITLE",
                         "maxLength": 20,
                         "maxLineLength": 20,
                         "maxLineCount": 1
+                        "colors": [
+                            {
+                                "name": "Red",
+                                "rgb": "FFFFFF"
+                            },
+                            {
+                                "name": "Blue",
+                                "rgb": "0000FF"
+                            },...
+                        ]
                     }
                 ]
             },
@@ -314,6 +357,16 @@ HTTP ステータスコードとともに結果を返します。
                         "maxLength": 984,
                         "maxLineLength": 41,
                         "maxLineCount": 24
+                        "colors": [
+                            {
+                                "name": "Red",
+                                "rgb": "FFFFFF"
+                            },
+                            {
+                                "name": "Blue",
+                                "rgb": "0000FF"
+                            },...
+                        ]
                     },...
                 ]
             },...
@@ -336,6 +389,9 @@ HTTP ステータスコードとともに結果を返します。
      * maxLength [number] : エリアに入力できる最大の文字数。
      * maxLineLength [number] : 一行に入力できる最大の文字数。
      * maxLineCount [number] : 最大の行数。
+     * colors : 色の要素
+       * name [string] : 色の名称。  
+       * rgb [string] : 色RGB値。  
 
 ※　イメージのminWidth/minHeightを下回ると印刷した際に画像が荒れる可能性があります。   
 ※　テキストのmaxLength、およびmaxLineCountを超えないように文字を設定してください。
@@ -370,6 +426,182 @@ HTTP ステータスコードとともに結果を返します。
 |:-----------|:------------|:------------|
 |200 (OK)|OK。成功|-|
 |404 (Not Found)|指定されたitemCodeが存在しない|itemcode_notexist|
+
+---
+## 編集アイテム一覧取得 API
+### ***Method*** : GET
+### ***Url*** : /v1/edit-items/{editKey}
+### ***Request***
+* editKey(任意) : 作品キー取得 APIにて発行したキーを指定してください。
+
+### ***Response***
+```
+{
+  "editItems": [
+    {
+      "editKey": "4022436311773427713",
+      "itemCode": "674331968573712513",
+      "title": "taitoruA",
+      "isOrdered": true,
+      "itemPrice": 3600,
+      "maxOrderCopy": 100,
+      "expirationDate": "2016/03/10",
+      "lastEditTime": "2016-02-25T14:14:03.463",
+      "createTime": "2016-02-25T10:25:50.403"
+    },...
+}
+```
+認証ユーザーが所有する編集中のアイテムのリストを返します。
+editKeyが有効期限内の編集アイテムのみ抽出します。
+editKeyを指定した場合、指定したアイテムのみ返します。
+* editKey [string]  : 編集中の作品を識別するためのキー
+* itemCode [string]  : アイテムの種類を識別するコード
+* title  [string] : 編集データにある作品のタイトル
+* isOrdered [bool] : 注文の有無。trueの場合注文済、falseの場合未注文の作品であることを表します
+* itemPrice [number] : アイテムの販売価格(税込)
+* maxOrderCopy [number] : 作品の最大購入可能冊数
+* expirationDate [datetime] : editKeyの有効期限です。有効期限を超過すると注文や編集はできません
+* lastEditTime [datetime] : 編集データの最終更新日
+* createTime [datetime] : editKeyの生成日
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+
+---
+## 編集アイテム削除 API
+### ***Method*** : POST
+### ***Header*** : X-HTTP-Method-Override=DELETE
+### ***Url*** : /v1/edit-items/{editKey}
+### ***Request***
+ * editKey : 作成する作品を識別するためのキーです。
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+|406 (Not Acceptable)|指定されたEditKeyが見つかりません。(注文済の作品は編集できません)|notfound_editkey|
+|406 (Not Acceptable)|指定されたeditKeyは削除済みです|deleted_editkey|
+|406 (Not Acceptable)|指定されたeditKeyは編集確定済みです|fixed_editkey|
+
+```
+【エラーの例】
+{
+    "errors": [
+        {
+            "errorCode": "notacceptable_editkey",
+            "message": "指定されたeditKeyが見つかりません。",
+            "moreInfo": "editKey : 1234567890"
+        },...
+    ]
+}
+```
+
+---
+## ページ取得 API
+### ***Method*** : GET
+### ***Url*** : /v1/{editKey}/pages/{pageNo}
+### ***Request***
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+* pageNo(任意) : ページ番号を指定してください。省略時は全ページの情報を取得します。
+
+### ***Response***
+```
+{
+    "itemSpecific": {
+        "totalImageCount": 13,
+        "pages": [
+            {
+                "page": 0,
+                "pageType": "Jacket",
+                "templateType": "Spread",
+                "templateId" : "BTRGSL00300"
+                "images": [
+                    {
+                        "areaID": "JACKET",
+                        "minWidth": 828,
+                        "minHeight": 621,
+                    }
+                ],
+                "texts": [
+                    {
+                        "areaID": "TITLE-AUTHOR",
+                        "maxLength": 20,
+                        "maxLineCount": 1
+                    },
+                    {
+                        "areaID": "TITLE-SUBTITLE",
+                        "maxLength": 40,
+                        "maxLineCount": 1
+                    },
+                    {
+                        "areaID": "TITLE-TITLE",
+                        "maxLength": 20,
+                        "maxLineCount": 1
+                    }
+                ]
+            },
+            {
+                "page": 1,
+                "pageType": "Body",
+                "templateType": "Right",
+                "images": [
+                    {
+                        "areaID": "PHOTO",
+                        "minWidth": 828,
+                        "minHeight": 621
+                    },...
+                ],
+                "texts": [
+                    {
+                        "areaID": "TEXT-DEFAULT",
+                        "maxLength": 984,
+                        "maxLineCount": 24
+                        "colors": [
+                            {
+                                "name": "Red",
+                                "rgb": "FFFFFF"
+                            },
+                            {
+                                "name": "Blue",
+                                "rgb": "0000FF"
+                            },...
+                        ]
+                    },...
+                ]
+            },...
+        ]
+    }
+}
+```
+* itemSpecifics : アイテムの要素。
+ * totalImageCount [number] : 全イメージエリアの数。
+ * pages : ページの要素。
+   * page [number] : ページの番号。
+   * pageType [string] : ページの種類。（Jacket：表紙, Body：本文, Front：扉, Colophon：奥付け）
+   * templateType : テンプレートの種類。（Left：左ページ, Right：右ページ, Spread：見開き）
+   * templateId : テンプレートを識別するためのキーです。
+   * images : ページの画像エリア情報
+     * areaID [string] : page内で一意となる画像エリアID。
+     * minWidth [number] : 最小のwidth(px)。
+     * minHeight [number] : 最小のheight(px)。
+   * texts : ページのテキストエリア情報
+     * areaID [string] : page内で一意となる画像エリアID。
+     * maxLength [number] : エリアに入力できる最大の文字数。
+     * maxLineCount [number] : 最大の行数。
+     * colors : 色の要素
+       * name [string] : 色の名称。  
+       * rgb [string] : 色RGB値。  
+
+※　イメージのminWidth/minHeightを下回ると印刷した際に画像が荒れる可能性があります。   
+※　テキストのmaxLength、およびmaxLineCountを超えないように文字を設定してください。
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|OK。リクエスト成功|-|
+|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+|404 (Not Found)|存在しないページが指定されました。|notfound_page|
 
 ---
 ## テキスト登録/更新 API
@@ -407,6 +639,11 @@ HTTP ステータスコードとともに結果を返します。
 |400 (Bad Request)|文字数がオーバーしました。|over_textlength|
 |400 (Bad Request)|印刷できない文字が指定されました。|notprint_text|
 |400 (Bad Request)|登録テキストが見つかりません。(POSTされたJSONに問題がある場合)|notfound_inputdata|
+|406 (Not Acceptable)|存在しないフォントが指定されました。|notacceptable_font|
+|406 (Not Acceptable)|存在しない色が指定されました。|notacceptable_color|
+|406 (Not Acceptable)|存在しないサイズが指定されました。|notacceptable_size|
+|406 (Not Acceptable)|タイトル以外でサイズは設定できません。|notacceptable_area|
+|406 (Not Acceptable)|存在しないアライメントが指定されました|notacceptable_align|
 
 ```
 【エラーの例】
@@ -441,10 +678,18 @@ HTTP ステータスコードとともに結果を返します。
         {
             "areaID": "TEXT01-DEFAULT",
             "value": "おしゃれな仕上がりと美しいレイアウトが評判のフォトブック作成サービスです。"
+            "fontCode": "16"
+            "fontColor": "Black"
+            "fontSizeType": "Large"
+            "align": "Start"
         }
     ],...
 }
 ```
+* fontCode[number] : テキストのフォントコードを取得します。
+* fontColor[string] : テキストのカラーを取得します。（Black,White,Red,Green,Blue,Chrcl,Rose,Grass,Sky,Orange）
+* fontSizeType[string] : テキストのサイズを取得します。（Large/Middle/Small）
+* align[string] : 進行方向に対するアライメント（横書きは垂直、縦書きは水平）を取得します。(Start/Middle/End)
 
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -497,6 +742,211 @@ HTTP ステータスコードとともに結果を返します。
     ]
 }
 ```
+
+---
+## アップロード済画像一覧取得 API
+### ***Method*** : GET
+### ***Url*** : /v1/{editKey}/images/
+### ***QueryString***
+* order : 画像のソート順を指定してください。
+ + page : ページ(＆エリア)順にソート
+ + upload(defalut) : アップロード順にソート
+* detail : 結果の返却方法を指定してください。
+ + true : 詳細モード
+ + false(default) : 簡略モード
+* filter : 返される画像の種類にフィルターをかけます。
+ + user : ユーザーによってアップされた画像のみレスポンスに含まれます。
+ + 指定なし(default) : 使用しているすべての画像をレスポンスに含めます。  
+ ※固定で配置されている画像もレスポンスに含まれます。
+
+### ***Request***
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+
+### ***Response***
+#### 詳細モード
+```
+{
+	"images":[
+    	{
+        	"imageId":"2-158-4-528-20160209191142-277116579",
+        	"page": "0",
+        	"areaId": "PHOTO01",
+        	"width": "1024"
+        	"height": "768"
+        	"rotate": "90"
+        },
+        {
+        	"imageId":"2-158-4-528-20160201456546-678855441",
+        	"page": "",
+        	"areaId": "",
+        	"width": ""
+        	"height": ""
+        	"rotate": ""
+        },...
+    ]
+}
+
+```
+※未配置画像の場合は、"page""areaId""width""height""rotate"は空となる。
+* imageId [string]: アップロードした画像を識別する画像ID。
+* page [int]: ページ番号。
+* areaId [string]: 配置されているイメージエリアのID。
+* width  [int]: 画像の幅(px)。
+* height [int]: 画像の高さ(px)。
+* rotate [int]: 画像の回転角度。
+
+#### 簡略モード
+```
+{
+	"images":[
+    	{
+        	"imageId":"2-158-4-528-20160209191142-277116579"
+        },
+        {
+        	"imageId":"2-158-4-528-20160201456546-678855441"
+        },...
+    ]
+}
+
+```
+* imageId [string]: アップロードした画像を識別する画像ID。
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+|406 (Not Acceptable)|指定されたorderが不正です。|notacceptable_order|
+|404 (Not Found)|ファイルが存在しません。|notfound_file|
+```
+【エラーの例】
+{
+    "errors": [
+        {
+            "errorCode": "notacceptable_editkey",
+            "message": "指定されたeditKeyが見つかりません。",
+            "moreInfo": "editKey:123456789"
+        },...
+    ]
+}
+```
+---
+## アップロード済画像取得 API
+### ***Method*** : GET
+### ***Url*** : /v1/{editKey}/images/{imageId}
+### ***Request***
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+* imageId : アップロードした画像を識別する画像ID。
+
+### ***Response***
+imageIdで指定されたアップロード済画像(jpg)データを返します(バイナリ形式)。
+
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|404 (Not Found)|ファイルが存在しません。|notfound_file|
+|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+```
+【エラーの例】
+{
+    "errors": [
+        {
+            "errorCode": "notfound_file",
+            "message": "ファイルが存在しません。",
+            "moreInfo": "imageId:2-158-4-528-20160209191142-277116579"
+        },...
+    ]
+}
+```
+---
+## アップロード済画像削除 API
+### ***Method*** : POST
+### ***Header*** : X-HTTP-Method-Override=DELETE
+### ***Url*** : /v1/{editKey}/images/{imageId}
+### ***Request***
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+* imageId : アップロードした画像を識別する画像ID。
+
+### ***Response***
+imageIdで指定されたアップロード済画像(jpg)データを削除します。
+使用済みの画像は指定できません。
+
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|404 (Not Found)|ファイルが存在しません。|notfound_file|
+|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+|406 (Not Acceptable)|使用済みの画像は指定できません。|notacceptable_imageid|
+
+```
+【エラーの例】
+{
+    "errors": [
+        {
+            "errorCode": "notfound_file",
+            "message": "ファイルが存在しません。",
+            "moreInfo": "imageId:2-158-4-528-20160209191142-277116579"
+        },...
+    ]
+}
+```
+
+---
+## アップロード画像取得 API
+### ***Method*** : GET
+### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}
+### ***QueryString***
+* h : 横幅を指定してください。
+* w : 高さを指定してください。
+※hかwのどちらかが指定した場合は、イメージの比率で拡縮された画像を返します。
+
+### ***Request***
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+* pageNo : ページ番号を指定してください。
+* areaID : 取得したいイメージエリアのIDを指定してください。
+
+### ***Response***
+* image : アップロードした画像(jpg)。
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|404 (Not Found)|存在しないページが指定されました。|notfound_page|
+|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
+|404 (Not Found)|ファイルが存在しません。|notfound_file|
+
+---
+## 画像アップロード取消 API
+### ***Method*** : POST
+### ***Header*** : X-HTTP-Method-Override=DELETE
+### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}
+### ***Request***
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+* pageNo : ページ番号を指定してください。
+* areaID : 取得したいイメージエリアのIDを指定してください。
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|404 (Not Found)|存在しないページが指定されました。|notfound_page|
+|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
+|404 (Not Found)|ファイルが存在しません。|notfound_file|
+
+```
+【エラーの例】
+{
+    "errors": [
+        {
+            "errorCode": "notfound_file",
+            "message": "ファイルが存在しません。",
+            "moreInfo": "page=7,areaID=PHOTO01"
+        },...
+    ]
+}
+```
+
 ---
 ## 画像アップロード/更新 API
 画像をアップロードし、指定したエリアに配置します。  
@@ -508,7 +958,7 @@ HTTP ステータスコードとともに結果を返します。
 ### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 * pageNo : ページ番号を指定してください。
-* areaID : 取得したいテキストエリアのIDを指定してください。
+* areaID : 取得したいイメージエリアのIDを指定してください。
 
 ### ***Request Body***
 アップロードする画像ファイルを含めてください。ファイルが複数ある場合は一つ目のみが適用されます。
@@ -555,11 +1005,17 @@ HTTP ステータスコードとともに結果を返します。
 ### ***QueryString***
 * imageId : 配置する画像の画像IDを指定してください。画像IDは画像アップロードAPIの戻り値として取得します。
 * rotate : 画像の回転角度。0, 90, 180, 270のみ指定可。
+* x(任意) : 画像のX座標(px)
+* y(任意) : 画像のY座標(px)
+* w(任意) : 画像の幅(px)
+* h(任意) : 画像の高さ(px)
+* scale(任意) : 画像の拡大率（0.1～1.0）
+※x,y,w,h,scaleは、指定した値のみが更新されます。指定が無い場合は更新されません。
 
 ### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 * pageNo : ページ番号を指定してください。
-* areaID : 取得したいテキストエリアのIDを指定してください。
+* areaID : 取得したいイメージエリアのIDを指定してください。
 
 ### ***Response***
 ```
@@ -581,6 +1037,7 @@ HTTP ステータスコードとともに結果を返します。
 |415 (Unsupported Media Type)|ファイル形式が不明です。|unsupported_file|
 |416 (Requested Range Not Satisfiable)|ファイルの幅が小さすぎます。|tooshort_width|
 |416 (Requested Range Not Satisfiable)|ファイルの高さが小さすぎます。|tooshort_height|
+|416 (Requested Range Not Satisfiable)|拡大率が不正です。(0.1～1.0)|tooshort_scale|
 ```
 【エラーの例】
 {
@@ -593,6 +1050,43 @@ HTTP ステータスコードとともに結果を返します。
     ]
 }
 ```
+
+---
+## 画像配置情報取得 API
+### ***Method*** : GET
+### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}/layouts
+### ***Request***
+* editKey : 作品キー取得 APIにて発行したキーを指定してください。
+* pageNo : ページ番号を指定してください。
+* areaID : 取得したいイメージエリアのIDを指定してください。
+
+### ***Response***
+```
+{
+    "imageId" : "2-158-4-528-20160209191142-277116579",
+    "rotate" : 90
+    "x" : 0
+    "y" : 0
+    "w" : 1500
+    "h" : 1400
+    "scale" : 0.1
+}
+```
+* imageId [string] : アップロードした画像を識別する画像ID。
+* rotate [number] : 画像の回転角度。
+* x : 画像のX座標(px)
+* y : 画像のY座標(px)
+* w : 画像の幅(px)
+* h : 画像の高さ(px)
+* scale : 画像の拡大率（0.1～1.0）
+
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+|404 (Not Found)|存在しないページが指定されました。|notfound_page|
+|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
+|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+
 ---
 ## 画像流し込み配置/更新 API
 アップロードされた画像をエリアへ一括配置します。  
@@ -643,234 +1137,6 @@ images [
     ]
 }
 ```
----
-## 画像アップロード取消 API
-### ***Method*** : POST
-### ***Header*** : X-HTTP-Method-Override=DELETE
-### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}
-### ***Request***
-* editKey : 作品キー取得 APIにて発行したキーを指定してください。
-* pageNo : ページ番号を指定してください。
-* areaID : 取得したいテキストエリアのIDを指定してください。
-
-### ***Response***
-| ステータスコード | 意味|エラーコード|
-|:-----------|:------------|:------------|
-|200 (OK)|成功|-|
-|404 (Not Found)|存在しないページが指定されました。|notfound_page|
-|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
-|404 (Not Found)|ファイルが存在しません。|notfound_file|
-
-```
-【エラーの例】
-{
-    "errors": [
-        {
-            "errorCode": "notfound_file",
-            "message": "ファイルが存在しません。",
-            "moreInfo": "page=7,areaID=PHOTO01"
-        },...
-    ]
-}
-```
----
-## アップロード画像取得 API
-### ***Method*** : GET
-### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}
-### ***QueryString***
-* h : 横幅を指定してください。
-* w : 高さを指定してください。
-※hかwのどちらかが指定した場合は、イメージの比率で拡縮された画像を返します。
-
-### ***Request***
-* editKey : 作品キー取得 APIにて発行したキーを指定してください。
-* pageNo : ページ番号を指定してください。
-* areaID : 取得したいテキストエリアのIDを指定してください。
-
-### ***Response***
-* image : アップロードした画像(jpg)。
-
-| ステータスコード | 意味|エラーコード|
-|:-----------|:------------|:------------|
-|200 (OK)|成功|-|
-|404 (Not Found)|存在しないページが指定されました。|notfound_page|
-|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
-|404 (Not Found)|ファイルが存在しません。|notfound_file|
-
----
-## アップロード済画像一覧取得 API
-### ***Method*** : GET
-### ***Url*** : /v1/{editKey}/images/
-### ***QueryString***
-* order : 画像のソート順を指定してください。
- + page : ページ(＆エリア)順にソート
- + upload(defalut) : アップロード順にソート
-* detail : 結果の返却方法を指定してください。
- + true : 詳細モード
- + false(default) : 簡略モード
-* filter : 返される画像の種類にフィルターをかけます。
- + user : ユーザーによってアップされた画像のみレスポンスに含まれます。
- + 指定なし(default) : 使用しているすべての画像をレスポンスに含めます。  
- ※固定で配置されている画像もレスポンスに含まれます。
-
-### ***Request***
-* editKey : 作品キー取得 APIにて発行したキーを指定してください。
-
-### ***Response***
-#### 詳細モード
-```
-{
-	"images":[
-    	{
-        	"imageId":"2-158-4-528-20160209191142-277116579",
-        	"page": "0",
-        	"areaId": "PHOTO01",
-        	"rotate": "90"
-        },
-        {
-        	"imageId":"2-158-4-528-20160201456546-678855441",
-        	"page": "",
-        	"areaId": "",
-        	"rotate": ""
-        },...
-    ]
-}
-
-```
-※未配置画像の場合は、"page""areaId""rotate"は空となる。
-* imageId [string]: アップロードした画像を識別する画像ID。
-* page [int]: ページ番号。
-* areaId [string]: 配置されているイメージエリアのID。
-* rotate [int]: 画像の回転角度。
-
-#### 簡略モード
-```
-{
-	"images":[
-    	{
-        	"imageId":"2-158-4-528-20160209191142-277116579"
-        },
-        {
-        	"imageId":"2-158-4-528-20160201456546-678855441"
-        },...
-    ]
-}
-
-```
-* imageId [string]: アップロードした画像を識別する画像ID。
-
-| ステータスコード | 意味|エラーコード|
-|:-----------|:------------|:------------|
-|200 (OK)|成功|-|
-|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
-|406 (Not Acceptable)|指定されたorderが不正です。|notacceptable_order|
-```
-【エラーの例】
-{
-    "errors": [
-        {
-            "errorCode": "notacceptable_editkey",
-            "message": "指定されたeditKeyが見つかりません。",
-            "moreInfo": "editKey:123456789"
-        },...
-    ]
-}
-```
----
-## アップロード済画像取得 API
-### ***Method*** : GET
-### ***Url*** : /v1/{editKey}/images/{imageId}
-### ***Request***
-* editKey : 作品キー取得 APIにて発行したキーを指定してください。
-* imageId : アップロードした画像を識別する画像ID。
-
-### ***Response***
-imageIdで指定されたアップロード済画像(jpg)データを返します(バイナリ形式)。
-
-
-| ステータスコード | 意味|エラーコード|
-|:-----------|:------------|:------------|
-|200 (OK)|成功|-|
-|404 (Not Found)|ファイルが存在しません。|notfound_file|
-|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
-```
-【エラーの例】
-{
-    "errors": [
-        {
-            "errorCode": "notfound_file",
-            "message": "ファイルが存在しません。",
-            "moreInfo": "imageId:2-158-4-528-20160209191142-277116579"
-        },...
-    ]
-}
-```
----
-## 画像配置情報取得 API
-### ***Method*** : GET
-### ***Url*** : /v1/{editKey}/images/{pageNo}/{areaID}/layouts
-### ***Request***
-* editKey : 作品キー取得 APIにて発行したキーを指定してください。
-* pageNo : ページ番号を指定してください。
-* areaID : 取得したいイメージエリアのIDを指定してください。
-
-### ***Response***
-```
-{
-	"imageId" : "2-158-4-528-20160209191142-277116579",
-    "rotate" : 90
-}
-```
-* imageId [string] : アップロードした画像を識別する画像ID。
-* rotate [number] : 画像の回転角度。
-
-| ステータスコード | 意味|エラーコード|
-|:-----------|:------------|:------------|
-|200 (OK)|成功|-|
-|404 (Not Found)|存在しないページが指定されました。|notfound_page|
-|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
-|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
-
----
-## 編集アイテム一覧取得 API
-### ***Method*** : GET
-### ***Url*** : /v1/edit-items/{editKey}
-### ***Request***
-* editKey(任意) : 作品キー取得 APIにて発行したキーを指定してください。
-
-### ***Response***
-```
-{
-  "editItems": [
-    {
-      "editKey": "4022436311773427713",
-      "itemCode": "674331968573712513",
-      "title": "taitoruA",
-      "isOrdered": true,
-      "itemPrice": 3600,
-      "maxOrderCopy": 100,
-      "expirationDate": "2016/03/10",
-      "lastEditTime": "2016-02-25T14:14:03.463",
-      "createTime": "2016-02-25T10:25:50.403"
-    },...
-}
-```
-認証ユーザーが所有する編集中のアイテムのリストを返します。
-editKeyが有効期限内の編集アイテムのみ抽出します。
-editKeyを指定した場合、指定したアイテムのみ返します。
-* editKey [string]  : 編集中の作品を識別するためのキー
-* itemCode [string]  : アイテムの種類を識別するコード
-* title  [string] : 編集データにある作品のタイトル
-* isOrdered [bool] : 注文の有無。trueの場合注文済、falseの場合未注文の作品であることを表します
-* itemPrice [number] : アイテムの販売価格(税込)
-* maxOrderCopy [number] : 作品の最大購入可能冊数
-* expirationDate [datetime] : editKeyの有効期限です。有効期限を超過すると注文や編集はできません
-* lastEditTime [datetime] : 編集データの最終更新日
-* createTime [datetime] : editKeyの生成日
-
-| ステータスコード | 意味|エラーコード|
-|:-----------|:------------|:------------|
-|200 (OK)|成功|-|
 
 ---
 ## プレビュー取得 API
@@ -934,11 +1200,11 @@ editKeyを指定した場合、指定したアイテムのみ返します。
             "warnings": [
 	            {
 		            "areaId": "PHOTO",
-		            "message": "画像が配置されていません。"
+		            "message": "写真サイズが不足しています。印象時に荒く見える恐れがあります。"
 		        },
 		        {
 		            "areaId": "TEXT-DEFAULT",
-		            "message": "テキストが入力されていません。"
+		            "message": "テキストが空です。(テキストが空白文字の場合に表示されます)"
 		        }
 		    ],
             "errors": [
@@ -956,42 +1222,25 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 * errorCount [number] : 注文に影響があるエリアの総数
 * pages : ページの要素
     * page [number] : ページの番号。
-    * warnings : Warningのリスト
-        * areaId [string] : page内で一意となるエリアID。
-        * message [string] : Warningの内容
-    * errors : Errorのリスト
-        * areaId [string] : page内で一意となるエリアID。
-        * message [string] : Errorの内容
+* warnings : Warningのリスト
+    * areaId [string] : page内で一意となるエリアID。
+    * message [string] : Warningの内容
+	
+    |  | 内容 |
+    |:-----------|:------------|
+    |Warning|画像が配置されていません。|
+    |Warning|テキストが入力されていません。|
+    |Warning|写真サイズが不足しています。印象時に荒く見える恐れがあります。|
+    |Warning|テキストが空です。(テキストが空白文字の場合に表示されます)|
+	
+	
+* errors : Errorのリスト
+    * areaId [string] : page内で一意となるエリアID。
+    * message [string] : Errorの内容
 
----
-## 編集アイテム削除 API
-### ***Method*** : POST
-### ***Header*** : X-HTTP-Method-Override=DELETE
-### ***Url*** : /v1/edit-items/{editKey}
-### ***Request***
- * editKey : 作成する作品を識別するためのキーです。
-
-### ***Response***
-| ステータスコード | 意味|エラーコード|
-|:-----------|:------------|:------------|
-|200 (OK)|成功|-|
-|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
-|406 (Not Acceptable)|指定されたEditKeyが見つかりません。(注文済の作品は編集できません)|notfound_editkey|
-|406 (Not Acceptable)|指定されたeditKeyは削除済みです|deleted_editkey|
-|406 (Not Acceptable)|指定されたeditKeyは編集確定済みです|fixed_editkey|
-
-```
-【エラーの例】
-{
-    "errors": [
-        {
-            "errorCode": "notacceptable_editkey",
-            "message": "指定されたeditKeyが見つかりません。",
-            "moreInfo": "editKey : 1234567890"
-        },...
-    ]
-}
-```
+    |  | 内容 |
+    |:-----------|:------------|
+    |Error|使用している画像が壊れています。|
 
 ---
 ## カート 開始 API
@@ -2055,11 +2304,11 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 {
     "categories": [
     	{
-            "name": "anniversary",
+            "name": "anniversary.png",
             "iconUrl": "https://www.mono-link.jp/icon/anniversary.png"
         },
     	{
-            "name": "birthday",
+            "name": "birthday.png",
             "iconUrl": "https://www.mono-link.jp/icon/birthday.png"
         },...
     ]
@@ -2147,12 +2396,12 @@ editKeyを指定した場合、指定したアイテムのみ返します。
     "events": [
         {
             "date": "20161125",
-            "category": "anniversary",
+            "category": "anniversary.png",
             "color": "red"
         },
         {
             "date": "20170108",
-            "category": "birthday",
+            "category": "birthday.png",
             "color": "blue"
         },...
     ]
@@ -2199,12 +2448,12 @@ editKeyを指定した場合、指定したアイテムのみ返します。
     "events": [
         {
             "date": "20161125",
-            "category": "anniversary",
+            "category": "anniversary.png",
             "color": "red"
         },
         {
             "date": "20170108",
-            "category": "birthday",
+            "category": "birthday.png",
             "color": "blue"
         },...
     ]
