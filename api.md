@@ -1,4 +1,4 @@
-# Photobook API仕様 ver 1.2.5
+# Photobook API仕様 ver 1.2.6
 
 Photobook APIの開発者向けのドキュメントです。
 
@@ -77,6 +77,7 @@ Photobook APIの開発者向けのドキュメントです。
 * [カレンダー イベント登録/更新 API](#カレンダー-イベント登録更新-api)
 * [カレンダー イベント削除 API](#カレンダー-イベント削除-api)
 * [固定お届け先情報取得 API](#固定お届け先情報取得-api)
+* [決済設定情報取得 API](#決済設定情報取得-api)
 
 ---
 ## 認証 API
@@ -1643,23 +1644,32 @@ images [
     "payment" : 
     {
         "paymentType" : "creditcard",
+        "paymentToken" : "tok_1234567890"
+    }
+または
+    "payment" : 
+    {
+        "paymentType" : "creditcard",
         "cardNumber" : "1111222233334444",
         "expireMonth" : "09",
         "expireYear" : "18",
         "securityCode" : "073",
-        "name" : "KONTEN TSUTARO"
+        "name" : "KONTEN TSUTARO",
     }
 }
 ```
 
 * payment : 注文の支払い要素
     * paymentType [string (20)] : 支払い方法。creditcard 固定。
+    * paymentToken [string] : 決済代行会社が作成した決済用ワンタイムトークン文字列。
     * cardNumber [string (16)] : クレジットカードの番号。
     * expireMonth [string (2)] : 有効期限の月(MM形式)。
     * expireYear [string (2)] : 有効期限の年(YY形式)。
     * securityCode [string] : セキュリティコード。3、4桁のみ
-    * name [string] : クレジットカードの名義。  
-    ※印字されているアルファベットを半角英字で指定。
+    * name [string] : クレジットカードの名義。 ※印字されているアルファベットを半角英字で指定。
+ 
+    "paymentToken"が設定されている場合は、その他の要素は参照されません。  
+    "paymentToken"が設定されていない場合は、カード番号・有効期限・セキュリティコード・名義を参照します。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -2619,3 +2629,35 @@ images [
     * email(任意) [string (256)] : お届け先のEMailアドレス。
 
 ---
+## 決済設定情報取得 API
+有効な決済設定情報を取得します。
+### ***Method*** : GET
+### ***Url*** : /v1/payments/{paymentType}
+### ***Request***
+* paymentType [string] (任意): 決済方法を絞り込みます。現在は「creditCard」のみ有効です。
+
+### ***Response***
+| ステータスコード | 意味|エラーコード|
+|:-----------|:------------|:------------|
+|200 (OK)|成功|-|
+
+```
+{
+    "settings" : [
+        {
+            "paymentType":"creditCard",	
+            "agentName":"PAY.JP"	
+            "publicKey":"pk_XXXXXXXXXXXXXXXXXXXXXXXXXX"	
+
+        },
+        ...
+    ]
+}
+```
+
+* settings : 決済設定情報要素(配列)
+    * paymentType [string] : 支払い方法。現在は"creditcard"のみ対応。
+    * agentName [string] : 決済代行会社名。
+    * publicKey [string] : 決済用ワンタイムトークンを取得するためのAPI接続用公開キー。　
+
+現在は設定できる決済方法は１つだけ、決済手段は"creditcard"のみ設定可能です。    
