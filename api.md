@@ -1,4 +1,4 @@
-# Photobook API仕様 ver 1.2.6
+# Photobook API仕様 ver 1.2.7
 
 Photobook APIの開発者向けのドキュメントです。
 
@@ -893,6 +893,7 @@ imageIdで指定されたアップロード済画像(jpg)データを返しま�
 |200 (OK)|成功|-|
 |404 (Not Found)|ファイルが存在しません。|notfound_file|
 |406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+
 ```
 【エラーの例】
 {
@@ -905,6 +906,7 @@ imageIdで指定されたアップロード済画像(jpg)データを返しま�
     ]
 }
 ```
+
 ---
 ## アップロード済画像削除 API
 ### ***Method*** : POST
@@ -1430,6 +1432,8 @@ images [
 ### ***Request***
 * cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
 
+
+### ***Request Body***
 ```
 {
     "delivery" : 
@@ -1528,6 +1532,8 @@ images [
 ### ***Url*** : /v1/carts/{cartNo}/purchasers
 ### ***Request***
 * cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+
+### ***Request Body***
 
 ```
 {
@@ -1679,6 +1685,8 @@ images [
 ### ***Url*** : /v1/carts/{cartNo}/payments
 ### ***Request***
 * cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+
+### ***Request Body***
 
 ```
 {
@@ -1931,6 +1939,9 @@ images [
 ### ***Request***
 * cartNo [string] (任意) : カート番号を指定します。カート開始APIで取得したコードを指定してください。  
 ※cartNoを指定した場合、Requestデータを設定する必要はありません。もしcartNoとRequestデータの両方を設定した場合は、Requestデータは無視されます。
+
+### ***Request Body***
+
 ```
 {
     "items" : [
@@ -2540,6 +2551,8 @@ images [
 ### ***Url*** : /v1/{editKeys}/calendars/events/
 ### ***Request***
 * editKeys [string]　(必須) : 作品キー取得 APIにて発行したキーを指定してください。  
+
+### ***Request Body***
 
 ```
 {
