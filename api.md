@@ -244,12 +244,12 @@ HTTP ステータスコードとともに結果を返します。
     * テキストエリア
   * ...
 
-また、ページは4種類あり、表紙(Jacket), 本文(Body), 扉(Front), 奥付け(Colophon)があります。
+また、ページは4種類あり、表紙(Jacket), 扉(FrontもしくはTobira), 本文(Body), 奥付(ColophonもしくはImprint)があります。
 ### 表紙(Jacket)
 表紙には、テキストエリアとしてタイトル、サブタイトル、著者名が設定できます。
 ![ジャケットイメージ](http://www.photoback.jp/Content/img/rough/item01.jpg "ジャケットイメージ")
 
-### 扉(Front)
+### 扉(FrontもしくはTobira)
 扉は開いて最初のページにあり、表紙に入力したタイトル、サブタイトル、著者名が自動で設定されます。変更はできません。
 ページ番号は扉から開始するため、扉のページ番号は1になります。
 ![扉イメージ](http://www.photoback.jp/Content/img/rough/item06.jpg "扉イメージ")
@@ -259,7 +259,7 @@ HTTP ステータスコードとともに結果を返します。
 
 ![本文イメージ](http://www.photoback.jp/Content/img/rough/item04.jpg "本文イメージ")
 
-### 奥付け(Colophon)
+### 奥付け(ColophonもしくはImprint)
 奥付は最終ページで扉と同じように表紙に入力したタイトル、サブタイトル、著者名が自動で設定されます。変更はできません。
 
 ![奥付イメージ](http://www.photoback.jp/Content/img/rough/item07.jpg "奥付イメージ")
@@ -284,8 +284,6 @@ HTTP ステータスコードとともに結果を返します。
             {
                 "page": 0,
                 "pageType": "Jacket",
-                "templateType": "Spread",
-                "templateId": null,
                 "images": [
                     {
                         "areaID": "JACKET",
@@ -297,86 +295,38 @@ HTTP ステータスコードとともに結果を返します。
                 ],
                 "texts": [
                     {
-                        "areaID": "TITLE-AUTHOR",
+                        "areaID": "TITLE-TITLE",
                         "maxLength": 20,
                         "maxLineLength": 20,
                         "maxLineCount": 1
-                        "colors": [
-                            {
-                                "name": "Red",
-                                "rgb": "FFFFFF"
-                            },
-                            {
-                                "name": "Blue",
-                                "rgb": "0000FF"
-                            },...
-                        ]
+                        "colors": []
                     },
                     {
                         "areaID": "TITLE-SUBTITLE",
                         "maxLength": 40,
                         "maxLineLength": 40,
                         "maxLineCount": 1
-                        "colors": [
-                            {
-                                "name": "Red",
-                                "rgb": "FFFFFF"
-                            },
-                            {
-                                "name": "Blue",
-                                "rgb": "0000FF"
-                            },...
-                        ]
+                        "colors": []
                     },
                     {
-                        "areaID": "TITLE-TITLE",
+                        "areaID": "TITLE-AUTHOR",
                         "maxLength": 20,
                         "maxLineLength": 20,
                         "maxLineCount": 1
-                        "colors": [
-                            {
-                                "name": "Red",
-                                "rgb": "FFFFFF"
-                            },
-                            {
-                                "name": "Blue",
-                                "rgb": "0000FF"
-                            },...
-                        ]
+                        "colors": []                            
                     }
-                ]
+                ],
+                "templateType": "Spread",
+                "templateId": null,
             },
             {
                 "page": 1,
-                "pageType": "Body",
+                "pageType": "Front",
                 "templateType": "Right",
-                "images": [
-                    {
-                        "areaID": "PHOTO",
-                        "minWidth": 828,
-                        "minHeight": 621,
-                        "cutting": [],
-                        "fitType": ""
-                    },...
-                ],
-                "texts": [
-                    {
-                        "areaID": "TEXT-DEFAULT",
-                        "maxLength": 984,
-                        "maxLineLength": 41,
-                        "maxLineCount": 24
-                        "colors": [
-                            {
-                                "name": "Red",
-                                "rgb": "FFFFFF"
-                            },
-                            {
-                                "name": "Blue",
-                                "rgb": "0000FF"
-                            },...
-                        ]
-                    },...
-                ]
+                "images": [],
+                "texts": [],
+                "templateType": "Right",
+                "templateId": null
             },...
         ]
     }
@@ -386,9 +336,8 @@ HTTP ステータスコードとともに結果を返します。
  * totalImageCount [number] : 全イメージエリアの数。
  * pages : ページの要素。
    * page [number] : ページの番号。
-   * pageType [string] : ページの種類。（Jacket：表紙, Body：本文, Front：扉, Colophon：奥付け）
-   * templateType[string] : テンプレートの種類。（Left：左ページ, Right：右ページ, Spread：見開き）
-   * templateId[number] : テンプレートを識別するためのキー。
+   * pageType [string] : ページの種類。（Jacket：表紙, Body：本文, FrontもしくはTobira：扉, ImprintもしくはColophon：奥付け）
+
    * images : ページの画像エリア情報
      * areaID [string] : page内で一意となる画像エリアID。
      * minWidth [number] : 最小のwidth(px)。
@@ -402,7 +351,9 @@ HTTP ステータスコードとともに結果を返します。
      * maxLineCount [number] : 最大の行数。
      * colors : 色の要素
        * name [string] : 色の名称。  
-       * rgb [string] : 色RGB値。  
+       * rgb [string] : 色RGB値。
+   * templateType[string] : テンプレートの種類。（Left：左ページ, Right：右ページ, Spread：見開き）
+   * templateId[number] : テンプレートを識別するためのId。
 
 ※　イメージのminWidth/minHeightを下回ると印刷した際に画像が荒れる可能性があります。   
 ※　テキストのmaxLength、およびmaxLineCountを超えないように文字を設定してください。
@@ -482,10 +433,10 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 * lastEditTime [datetime] : 編集データの最終更新日
 * createTime [datetime] : editKeyの生成日
 * shareKey [string] : 編集データの共有を行うためのキー
-* albumId [string] : アルバムID
-* itemName [string] : アイテムの名前
+* albumId [string] : アルバムを識別するためのID。IDが設定されていない場合はnullを返します。
+* itemName [string] : アイテムの名称
 * page [number] : アイテムのページ数
-* status [number] : アイテムの状態(1: 作成・編集中、2: 編集確定、4: 注文済み、9: 削除・キャンセル)
+* status [number] : 編集データの状態(1: 作成・編集中、2: 編集確定、4: 注文済み、9: 削除・キャンセル)
 
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -538,8 +489,6 @@ editKeyを指定した場合、指定したアイテムのみ返します。
             {
                 "page": 0,
                 "pageType": "Jacket",
-                "templateType": "Spread",
-                "templateId" : "BTRGSL00300"
                 "images": [
                     {
                         "areaID": "JACKET",
@@ -554,55 +503,64 @@ editKeyを指定した場合、指定したアイテムのみ返します。
                 ],
                 "texts": [
                     {
-                        "areaID": "TITLE-AUTHOR",
+                        "areaID": "TITLE-TITLE",
                         "maxLength": 20,
-                        "maxLineCount": 1
+                        "maxLineLength: 13,
+                        "maxLineCount": 1,
+                        "colors": [
+                            {
+                                "name": "Black",
+                                "rgb": "000"
+                            },
+                            {
+                                "name": "Chrcl",
+                                "rgb": "78716D"
+                            },...
+                        ]
                     },
                     {
                         "areaID": "TITLE-SUBTITLE",
                         "maxLength": 40,
-                        "maxLineCount": 1
+                        "maxLineLength": 41,
+                        "maxLineCount": 1,
+                        "colors": [
+                            {
+                                "name": "Black",
+                                "rgb": "000"
+                            },
+                            {
+                                "name": "Chrcl",
+                                "rgb": "78716D"
+                            },...
+                        ]
                     },
                     {
-                        "areaID": "TITLE-TITLE",
+                        "areaID": "TITLE-AUTHOR",
                         "maxLength": 20,
-                        "maxLineCount": 1
+                        "maxLineLength": 41,
+                        "maxLineCount": 1,
+                        "colors": [
+                            {
+                                "name": "Black",
+                                "rgb": "000"
+                            },
+                            {
+                                "name": "Chrcl",
+                                "rgb": "78716D"
+                            },...
+                        ]
                     }
-                ]
+                ],
+                "templateType": "Spread",
+                "templateId" : "BTRGSL00300"
             },
             {
                 "page": 1,
-                "pageType": "Body",
+                "pageType": "Tobira",
+                "images": [],
+                "texts": [],
                 "templateType": "Right",
-                "images": [
-                    {
-                        "areaID": "PHOTO",
-                        "minWidth": 828,
-                        "minHeight": 621,
-                        "cutting": [
-                            "Top",
-                            "Right"
-                        ],
-                        "fitType": "LFit"
-                    },...
-                ],
-                "texts": [
-                    {
-                        "areaID": "TEXT-DEFAULT",
-                        "maxLength": 984,
-                        "maxLineCount": 24
-                        "colors": [
-                            {
-                                "name": "Red",
-                                "rgb": "FFFFFF"
-                            },
-                            {
-                                "name": "Blue",
-                                "rgb": "0000FF"
-                            },...
-                        ]
-                    },...
-                ]
+                "templateId": "BTRGSR00100"                
             },...
         ]
     }
@@ -612,9 +570,7 @@ editKeyを指定した場合、指定したアイテムのみ返します。
  * totalImageCount [number] : 全イメージエリアの数。
  * pages : ページの要素。
    * page [number] : ページの番号。
-   * pageType [string] : ページの種類。（Jacket：表紙, Body：本文, Front：扉, Colophon：奥付け）
-   * templateType : テンプレートの種類。（Left：左ページ, Right：右ページ, Spread：見開き）
-   * templateId : テンプレートを識別するためのキーです。
+   * pageType [string] : ページの種類。（Jacket：表紙, FrontもしくはTobira:扉, Body：本文, ImprintもしくはColophon：奥付）
    * images : ページの画像エリア情報
      * areaID [string] : page内で一意となる画像エリアID。
      * minWidth [number] : 最小のwidth(px)。
@@ -624,10 +580,13 @@ editKeyを指定した場合、指定したアイテムのみ返します。
    * texts : ページのテキストエリア情報
      * areaID [string] : page内で一意となる画像エリアID。
      * maxLength [number] : エリアに入力できる最大の文字数。
+     * maxLineLength [number] : 一行に入力できる最大の文字数。
      * maxLineCount [number] : 最大の行数。
      * colors : 色の要素
        * name [string] : 色の名称。  
-       * rgb [string] : 色RGB値。  
+       * rgb [string] : 色RGB値。 
+   * templateType : テンプレートの種類。（Left：左ページ, Right：右ページ, Spread：見開き）
+   * templateId : テンプレートを識別するためのIdです。
 
 ※　イメージのminWidth/minHeightを下回ると印刷した際に画像が荒れる可能性があります。   
 ※　テキストのmaxLength、およびmaxLineCountを超えないように文字を設定してください。
@@ -715,16 +674,16 @@ editKeyを指定した場合、指定したアイテムのみ返します。
         {
             "areaID": "TEXT01-DEFAULT",
             "value": "おしゃれな仕上がりと美しいレイアウトが評判のフォトブック作成サービスです。"
-            "fontCode": "16"
             "fontColor": "Black"
+            "fontCode": "16"
             "fontSizeType": "Large"
             "align": "Start"
         }
     ],...
 }
 ```
-* fontCode[number] : テキストのフォントコードを取得します。
 * fontColor[string] : テキストのカラーを取得します。（Black,White,Red,Green,Blue,Chrcl,Rose,Grass,Sky,Orange）
+* fontCode[number] : テキストのフォントコードを取得します。
 * fontSizeType[string] : テキストのサイズを取得します。（Large/Middle/Small）
 * align[string] : 進行方向に対するアライメント（横書きは垂直、縦書きは水平）を取得します。(Start/Middle/End)
 
@@ -807,22 +766,22 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 {
 	"images":[
     	{
-        	"imageId":"2-158-4-528-20160209191142-277116579",
         	"page": "0",
-        	"areaId": "PHOTO01",
-        	"width": "1024"
-        	"height": "768"
-        	"rotate": "90",
+            "areaId": "PHOTO01",
+            "width": "1024"
+            "height": "768"
+            "rotate": "90",
+            "imageId":"2-158-4-528-20160209191142-277116579",
         	"containerName": null,
         	"url": null
         },
         {
-        	"imageId":"2-158-4-528-20160201456546-678855441",
         	"page": "",
-        	"areaId": "",
-        	"width": ""
+            "areaId": "",
+            "width": ""
         	"height": ""
         	"rotate": "",
+            "imageId":"2-158-4-528-20160201456546-678855441",
         	"containerName": null,
         	"url": null
         },...
@@ -831,30 +790,36 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 
 ```
 ※未配置画像の場合は、"page""areaId""width""height""rotate"は空となる。
-* imageId [string]: アップロードした画像を識別する画像ID。
 * page [int]: ページ番号。
-* areaId [string]: 配置されているイメージエリアのID。
+* imageId [string]: アップロードした画像を識別する画像ID。
 * width  [int]: 画像の幅(px)。
 * height [int]: 画像の高さ(px)。
 * rotate [int]: 画像の回転角度。
-* containerName[string]: Azureでのアップロード先コンテナ名、ハッシュ化したユーザID + 連番
-* url[string]: 各向け先ごとのエンドポイント(https://以降)
+* areaId [string]: 配置されているイメージエリアのID。
+* containerName[string]: アップロード先コンテナ名
+* url[string]: アップロード先のエンドポイント
 
 #### 簡略モード
 ```
 {
 	"images":[
     	{
-        	"imageId":"2-158-4-528-20160209191142-277116579"
+        	"imageId":"2-158-4-528-20160209191142-277116579",
+            "containerName": null,
+        	"url": null
         },
         {
         	"imageId":"2-158-4-528-20160201456546-678855441"
+            "containerName": null,
+        	"url": null
         },...
     ]
 }
 
 ```
 * imageId [string]: アップロードした画像を識別する画像ID。
+* containerName[string]: アップロード先コンテナ名
+* url[string]: アップロード先のエンドポイント
 
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -1280,23 +1245,23 @@ images [
     * page [number] : ページの番号。
 * warnings : Warningのリスト
     * areaId [string] : page内で一意となるエリアID。
-    * message [string] : Warningの内容
-    
-|  | 内容 |
-|:-----------|:------------|
-|Warning|画像が配置されていません。|
-|Warning|テキストが入力されていません。|
-|Warning|写真サイズが不足しています。印象時に荒く見える恐れがあります。|
-|Warning|テキストが空です。(テキストが空白文字の場合に表示されます)|
+    * message [string] : Warningの内容    
+
+    |  | 内容 |
+    |:-----------|:------------|
+    |Warning|画像が配置されていません。|
+    |Warning|テキストが入力されていません。|
+    |Warning|写真サイズが不足しています。印象時に荒く見える恐れがあります。|
+    |Warning|テキストが空です。(テキストが空白文字の場合に表示されます)|
 
 
 * errors : Errorのリスト
     * areaId [string] : page内で一意となるエリアID。
     * message [string] : Errorの内容
 
-|  | 内容 |
-|:-----------|:------------|
-|Error|使用している画像が壊れています。|
+    |  | 内容 |
+    |:-----------|:------------|
+    |Error|使用している画像が壊れています。|
 
 ---
 ## カート 開始 API
@@ -1312,9 +1277,9 @@ images [
 }
 ```
 
-* cartNo [string] : カート情報を識別するためのキーです。
+* cartNo [string] : カート情報を識別するための番号です。
 * expireDate [datetime] : カートの有効期限です。発行日を基準にして+7日となります。例）2016/1/1に取得→2016/1/8
-* cartUrl [string] : カートのWebサイトを利用する場合の表示先URLです。
+* cartUrl [string] : カートのWebサイトを利用する場合の遷移先URLです。
 
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -1645,6 +1610,7 @@ images [
 ```
 {
     "amount" : 4000,
+    "discount" : -1000,
     "billingItems" : [
         {
             "billingItem" : "商品代金",
@@ -1654,8 +1620,7 @@ images [
             "billingItem" : "配送料",
             "amount" : 500
         }, ...
-    ],
-    "discount" : -1000,
+    ],    
     "discountItems" : [
         {
             "discountRuleCode" : "ボリュームディスカウント",
@@ -1670,10 +1635,10 @@ images [
 ```
 
 * amount [number] : 請求合計金額
+* discount [number] : 割引合計金額
 * billingItems : 請求項目要素
     * billingItem [string] : 請求項目。
     * amount [number] : 請求項目の金額。
-* discount [number] : 割引合計金額
 * discountItems : 割引要素
     * discountRuleCode [string] : 割引名。
     * discountPrice [number] : 割引の金額。
@@ -1782,7 +1747,10 @@ images [
 {
     "cart": {
         "cartNo": "6302524379815465985",
-        "expireDate": "2016/5/10",
+        "expireDate": "2019/7/14",
+        "amount" : 6100,
+        "discount" : -1000,
+        "creditStatus": null,
         "items": [
             {
                 "editKey": "4941036644930230273",
@@ -1800,10 +1768,9 @@ images [
                 "unitPrice" : 1200,
                 "totalPrice" : 3600,
                 "maxOrderCopy": 0,
-                "createTime": "2019-06-24T14:24:47.83"
+                "createTime": "2019-06-24T14:40:47.83"
             }, ...
-        ],
-        "amount" : 6100,
+        ],        
         "billingItems" : [
             {
                 "billingItem" : "商品代金",
@@ -1857,8 +1824,7 @@ images [
             "company" : "API株式会社",
             "telephone" : "03-1234-5678",
              "email" : "support@mono-link.jp"
-        },
-        "discount" : -1000,
+        },        
         "discountItems" : [
             {
                 "discountRuleCode" : "ボリュームディスカウント",
@@ -1879,13 +1845,15 @@ images [
 * cart
     * cartNo [string] : カートを管理するための番号です。
     * expireDate [datetime] : カートの有効期限を返します。
+    * amount [number] : 請求合計金額を返します(決済を行わない場合は0を返します)。
+    * discount [number] : 割引合計金額を返します。
+    * creditStatus[bool] : クレジットカード払いの与信ステータス
     * items : 注文の商品のリスト
         * editKey [string] : 作品キー取得 APIにて発行したキーを指定してください。
         * title [string] : 作品のタイトルを返します。
         * copy [number] : 注文された冊数を返します。
         * unitPrice [number] : 作品の単価(決済を行わない場合は0を返します)。
-        * totalPrice [number] : 作品の合計(決済を行わない場合は0を返します)。
-    * amount [number] : 請求合計金額を返します(決済を行わない場合は0を返します)。
+        * totalPrice [number] : 作品の合計(決済を行わない場合は0を返します)。    
     * billingItems : 請求項目要素
         * billingItem [string] : 請求項目名。
         * amount [number] : 請求項目の金額。
@@ -1926,8 +1894,7 @@ images [
         * addressLine2(任意) [string] : お届け先の建物名。
         * company(任意) [string] : お届け先の会社名。
         * telephone [string] : お届け先の電話番号。
-        * email(任意) [string] : お届け先のEMailアドレス。
-    * discount [number] : 割引合計金額を返します。
+        * email(任意) [string] : お届け先のEMailアドレス。    
     * discountItems : 割引要素
         * discountRuleCode [string] : 割引名。
         * discountPrice [number] : 割引の金額。
@@ -2075,11 +2042,10 @@ images [
 {
     "orders": [
         {
+            "orderId": 14744,
             "orderNo" : "CWIP-90123456",
             "orderDateTime" : "2017/1/1 00:00:00",
-            "status" : 2,
-            "tempOrderLimitDate" : "2017/1/15 00:00:00",
-	    "cancelLimitDate" : "2017/1/15 00:00:00",
+            "status" : 1,
             "items" : [
                 {
                     editKey : "3800604642207821313",
@@ -2090,6 +2056,7 @@ images [
                 },...
             ],
             "amount" : 15500,
+            "discount" : -1000,
         	"billingItems" : [
                 {
                     "billingItem" : "商品代金",
@@ -2135,8 +2102,7 @@ images [
                 "company" : "コンテンツワークス株式会社",
                 "telephone" : "03-6674-2250",
                 "email" : "support@mono-link.jp"
-            },
-            "discount" : -1000
+            },            
             "discountItems" : [
                 {
                     "discountRuleCode" : "ボリュームディスカウント",
@@ -2146,7 +2112,10 @@ images [
                     "discountRuleCode" : "送料無料",
                     "discountPrice" : -400
                 }, ...
-            ]
+            ],
+            "tempOrderLimitDate" : "2017/1/15 00:00:00",
+            "expireDate": "2017/1/31 00:00:00",
+            "cancelLimitDate": "2017/1/2 00:00:00"
         },...
     ],...
 }
@@ -2155,10 +2124,8 @@ images [
 
 * orders
     * orderNo [string] : 注文を管理するための番号です。
-    * orderDateTime [string] : 注文日時間。
+    * orderDateTime [datetime] : 注文日時。
     * status [number] : 注文のステータス（1:注文受付, 2:注文確定, 3:注文保留, 4:出荷済, 9:キャンセル）
-    * tempOrderLimitDate [string] : 仮注文を確定注文にすることができる期限
-    * cancelLimitDate [string] : 注文をキャンセルすることができる期限
     * items : 注文の商品のリスト
         * editKey [string] : 作品キー取得 APIにて発行したキーを指定してください。
         * title [string] : 作品のタイトルを返します。
@@ -2205,6 +2172,9 @@ images [
 	* discountItems : 割引要素
     	* discountRuleCode [string] : 割引名。
     	* discountPrice [number] : 割引の金額。
+    * tempOrderLimitDate [datetime] : 仮注文を確定注文にすることができる期限
+    * expireDate[datetime] : 注文の有効期限
+    * cancelLimitDate [datetime] : 注文をキャンセルすることができる期限
 
 ※ 注文受付から24時間以内には、注文確定となり出荷予定日が決まります。
 
