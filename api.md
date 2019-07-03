@@ -38,7 +38,7 @@ Photobook APIの開発者向けのドキュメントです。
 * [画像アップロード/更新 API](#画像アップロード更新-api) ...アップロード画像をエリアにダイレクトに配置
 * [画像配置/更新 API](#画像配置更新-api) ...アップロード済の画像をエリアに配置
 * [画像配置情報取得 API](#画像配置情報取得-api)
-* [画像流し込み配置/更新 API](#画像流し込み配置更新-api) ...アップロード済みの画像を一括指定で一括配置
+* [画像流し込み配置/更新 API](#画像流し込み配置更新-api) ...アップロード済の画像を一括指定で一括配置
 
 ### プレビュー
 * [プレビュー取得 API](#プレビュー取得-api)
@@ -244,12 +244,12 @@ HTTP ステータスコードとともに結果を返します。
     * テキストエリア
   * ...
 
-また、ページは4種類あり、表紙(Jacket), 扉(FrontもしくはTobira), 本文(Body), 奥付(ColophonもしくはImprint)があります。
+また、ページは4種類あり、表紙(Jacket), 扉(Front/Tobira), 本文(Body), 奥付(Colophon/Imprint)があります。
 ### 表紙(Jacket)
 表紙には、テキストエリアとしてタイトル、サブタイトル、著者名が設定できます。
 ![ジャケットイメージ](http://www.photoback.jp/Content/img/rough/item01.jpg "ジャケットイメージ")
 
-### 扉(FrontもしくはTobira)
+### 扉(Front/Tobira)
 扉は開いて最初のページにあり、表紙に入力したタイトル、サブタイトル、著者名が自動で設定されます。変更はできません。
 ページ番号は扉から開始するため、扉のページ番号は1になります。
 ![扉イメージ](http://www.photoback.jp/Content/img/rough/item06.jpg "扉イメージ")
@@ -259,7 +259,7 @@ HTTP ステータスコードとともに結果を返します。
 
 ![本文イメージ](http://www.photoback.jp/Content/img/rough/item04.jpg "本文イメージ")
 
-### 奥付け(ColophonもしくはImprint)
+### 奥付(Colophon/Imprint)
 奥付は最終ページで扉と同じように表紙に入力したタイトル、サブタイトル、著者名が自動で設定されます。変更はできません。
 
 ![奥付イメージ](http://www.photoback.jp/Content/img/rough/item07.jpg "奥付イメージ")
@@ -336,7 +336,7 @@ HTTP ステータスコードとともに結果を返します。
  * totalImageCount [number] : 全イメージエリアの数。
  * pages : ページの要素。
    * page [number] : ページの番号。
-   * pageType [string] : ページの種類。（Jacket：表紙, Body：本文, FrontもしくはTobira：扉, ImprintもしくはColophon：奥付け）
+   * pageType [string] : ページの種類。（Jacket：表紙, Body：本文, Front/Tobira：扉, Imprint/Colophon：奥付）
 
    * images : ページの画像エリア情報
      * areaID [string] : page内で一意となる画像エリアID。
@@ -382,7 +382,7 @@ HTTP ステータスコードとともに結果を返します。
 
 * editKey [string] : 作成する作品を識別するためのキーです。
 * userId [number] : 現在の認証ユーザーを識別するIDです。
-* expireDate [datetime] : 作成する作品の編集期限です。発行日を基準にして+7日となります。例）2016/1/1に取得→2016/1/8
+* expireDate [datetime] : 作成する作品の編集期限です。デフォルトでは、editKeyの生成日を基準にして+7日となります。例）2016/1/1に取得→2016/1/8
 * sharekey [string] : 編集データの共有を行うためのキーです。
 
 
@@ -570,7 +570,7 @@ editKeyを指定した場合、指定したアイテムのみ返します。
  * totalImageCount [number] : 全イメージエリアの数。
  * pages : ページの要素。
    * page [number] : ページの番号。
-   * pageType [string] : ページの種類。（Jacket：表紙, FrontもしくはTobira:扉, Body：本文, ImprintもしくはColophon：奥付）
+   * pageType [string] : ページの種類。（Jacket：表紙, Front/Tobira:扉, Body：本文, Imprint/Colophon：奥付）
    * images : ページの画像エリア情報
      * areaID [string] : page内で一意となる画像エリアID。
      * minWidth [number] : 最小のwidth(px)。
@@ -734,7 +734,7 @@ editKeyを指定した場合、指定したアイテムのみ返します。
         {
             "errorCode": "unsupported_file",
             "message": "ファイル形式が不明です。",
-            "moreInfo": "ご利用できる画像ファイル形式はjpeg（jpg）のみです。"
+            "moreInfo": "ご利用できる画像ファイル形式はjpeg（jpg）とpngのみです。"
         },...
     ]
 }
@@ -747,15 +747,15 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 ### ***Url*** : /v1/{editKey}/images/
 ### ***QueryString***
 * order : 画像のソート順を指定してください。
- * page : ページ(＆エリア)順にソート
- * upload(defalut) : アップロード順にソート
+    * page : ページ(＆エリア)順にソート
+    * upload(defalut) : アップロード順にソート
 * detail : 結果の返却方法を指定してください。
- * true : 詳細モード
- * false(default) : 簡略モード
+    * true : 詳細モード
+    * false(default) : 簡略モード
 * filter : 返される画像の種類にフィルターをかけます。
- * user : ユーザーによってアップされた画像のみレスポンスに含まれます。
- * 指定なし(default) : 使用しているすべての画像をレスポンスに含めます。  
- ※固定で配置されている画像もレスポンスに含まれます。
+    * user : ユーザーによってアップされた画像のみレスポンスに含まれます。
+    * 指定なし(default) : 使用しているすべての画像をレスポンスに含めます。  
+    ※固定で配置されている画像もレスポンスに含まれます。
 
 ### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
@@ -766,24 +766,24 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 {
 	"images":[
     	{
-        	"page": "0",
+            "page": "0",
             "areaId": "PHOTO01",
             "width": "1024"
             "height": "768"
             "rotate": "90",
             "imageId":"2-158-4-528-20160209191142-277116579",
-        	"containerName": null,
-        	"url": null
+            "containerName": null,
+            "url": null
         },
         {
-        	"page": "",
+            "page": "",
             "areaId": "",
             "width": ""
-        	"height": ""
-        	"rotate": "",
+            "height": ""
+            "rotate": "",
             "imageId":"2-158-4-528-20160201456546-678855441",
-        	"containerName": null,
-        	"url": null
+            "containerName": null,
+            "url": null
         },...
     ]
 }
@@ -804,14 +804,14 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 {
 	"images":[
     	{
-        	"imageId":"2-158-4-528-20160209191142-277116579",
+            "imageId":"2-158-4-528-20160209191142-277116579",
             "containerName": null,
-        	"url": null
+            "url": null
         },
         {
-        	"imageId":"2-158-4-528-20160201456546-678855441"
+            "imageId":"2-158-4-528-20160201456546-678855441"
             "containerName": null,
-        	"url": null
+            "url": null
         },...
     ]
 }
@@ -850,7 +850,7 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 * imageId : アップロードした画像を識別する画像ID。
 
 ### ***Response***
-imageIdで指定されたアップロード済画像(jpg)データを返します(バイナリ形式)。
+imageIdで指定されたアップロード済画像(jpg,png)データを返します(バイナリ形式)。
 
 
 | ステータスコード | 意味|エラーコード|
@@ -882,7 +882,7 @@ imageIdで指定されたアップロード済画像(jpg)データを返しま�
 * imageId : アップロードした画像を識別する画像ID。
 
 ### ***Response***
-imageIdで指定されたアップロード済画像(jpg)データを削除します。
+imageIdで指定されたアップロード済画像(jpg,png)データを削除します。
 使用済みの画像は指定できません。
 
 
@@ -1278,7 +1278,7 @@ images [
 ```
 
 * cartNo [string] : カート情報を識別するための番号です。
-* expireDate [datetime] : カートの有効期限です。発行日を基準にして+7日となります。例）2016/1/1に取得→2016/1/8
+* expireDate [datetime] : カートの有効期限です。デフォルトでは発行日を基準にして+7日となります。例）2016/1/1に取得→2016/1/8
 * cartUrl [string] : カートのWebサイトを利用する場合の遷移先URLです。
 
 | ステータスコード | 意味|エラーコード|
@@ -1290,7 +1290,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/items
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 
@@ -1336,7 +1336,7 @@ images [
 ### ***Method*** : POST
 ### ***Url*** : /v1/carts/{cartNo}/items/{editKey}
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 
 
@@ -1352,7 +1352,7 @@ images [
 ### ***Header*** : X-HTTP-Method-Override=PUT
 ### ***Url*** : /v1/carts/{cartNo}/items/{editKey}
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 
 ```
@@ -1362,7 +1362,7 @@ images [
 ```
 
 * copy [number] : 注文する作品の冊数。
-※ 一回の注文での最大冊数は、作品ごとに決まっておりデフォルトでは最大100冊までです。
+※ 一回の注文での最大冊数は作品ごとに決まっており、デフォルトでは最大100冊までです。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1379,7 +1379,7 @@ images [
 ### ***Header*** : X-HTTP-Method-Override=DELETE
 ### ***Url*** : /v1/carts/{cartNo}/items/{editKey}
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 
 ### ***Response***
@@ -1395,7 +1395,7 @@ images [
 ### ***Header*** : X-HTTP-Method-Override=PUT
 ### ***Url*** : /v1/carts/{cartNo}/deliveries
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 
 ### ***Request Body***
@@ -1446,7 +1446,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/deliveries
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1496,7 +1496,7 @@ images [
 ### ***Header*** : X-HTTP-Method-Override=PUT
 ### ***Url*** : /v1/carts/{cartNo}/purchasers
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
 
 ### ***Request Body***
 
@@ -1531,7 +1531,7 @@ images [
     * addressLine1 [string (50)] : 差出人の町村番地。
     * addressLine2(任意)  [string (50)]: 差出人の建物名。
     * company(任意)  [string (25)]: 差出人の会社名。
-    * telephone [string (20)] : 差出人の電話番号(ハイフンなしでもOK)。
+    * telephone [string (13)] : 差出人の電話番号(ハイフンなしでもOK)。
     * email(任意)  [string (256)] : 差出人のEMailアドレス。
 
 ### ***Response***
@@ -1550,7 +1550,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/purchasers
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1599,7 +1599,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/charges
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1649,7 +1649,7 @@ images [
 ### ***Header*** : X-HTTP-Method-Override=PUT
 ### ***Url*** : /v1/carts/{cartNo}/payments
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
 
 ### ***Request Body***
 
@@ -1698,7 +1698,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/payments
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1734,7 +1734,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1904,7 +1904,7 @@ images [
 ### ***Method*** : POST
 ### ***Url*** : /v1/orders/{cartNo}
 ### ***Request***
-* cartNo [string] (任意) : カート番号を指定します。カート開始APIで取得したコードを指定してください。  
+* cartNo [string] (任意) : カート番号を指定します。カート開始APIで取得した番号を指定してください。  
 ※cartNoを指定した場合、Requestデータを設定する必要はありません。もしcartNoとRequestデータの両方を設定した場合は、Requestデータは無視されます。
 
 ### ***Request Body***
@@ -1966,7 +1966,7 @@ images [
     * addressLine2(任意)  [string (50)]: お届け先の建物名。
     * company(任意)  [string (25)]: お届け先の会社名。
     * companyBranch(任意)  [string (25)]: お届け先の支店名。
-    * telephone [string (20)] : お届け先の電話番号(ハイフンなしでもOK)。
+    * telephone [string (13)] : お届け先の電話番号(ハイフンなしでもOK)。
     * email(任意) [string (256)] : お届け先のEMailアドレス。
     * isDescribed [number]: 納品書記載可否フラグ。(1:可、0:否)
 * purchaser(任意) : 注文の差出人要素
@@ -1980,10 +1980,10 @@ images [
     * addressLine1 [string (50)] : 差出人の町村番地。
     * addressLine2(任意)  [string (50)]: 差出人の建物名。
     * company(任意)  [string (25)]: お差出人の会社名。
-    * telephone [string (20)] : 差出人の電話番号(ハイフンなしでもOK)。
+    * telephone [string (13)] : 差出人の電話番号(ハイフンなしでもOK)。
     * email(任意)  [string (256)] : 差出人のEMailアドレス。
 
----
+
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -2216,7 +2216,7 @@ images [
 ### ***Request***
 * orderNo [string] : 注文確定 APIにて発行したOrderNoをご指定下さい。(CWIP-90123456の形式)  
 
----
+
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -2253,7 +2253,7 @@ images [
 ### ***Request***
 * zipCode [string] : 郵便番号を指定します。 (ZZZZZZZ形式 or ZZZ-ZZZZ形式）
 
----
+
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -2306,7 +2306,7 @@ images [
 * to : カレンダーを生成する終了年月を指定します。（yyyyMM形式 or yyyy-MM形式）  
 ※ from,toを指定しない場合、操作月から12ヶ月分のカレンダーを生成します。  
 
----
+
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -2340,7 +2340,7 @@ images [
 ### ***Request***
 * editKeys [string]　(必須) : 作品キー取得 APIにて発行したキーを指定してください。  
 
----
+
 ### ***Response***
 ```
 {
@@ -2545,7 +2545,7 @@ images [
  * category [string]　: 登録/更新するイベントのカテゴリーを指定してください。  
  * color [string]　: 登録/更新するイベントの色を指定してください。  
 
----
+
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -2596,7 +2596,7 @@ images [
 * events : イベント  
  * date [string]　: イベントを削除する日付を指定してください。  
 
----
+
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -2713,4 +2713,4 @@ images [
     * agentName [string] : 決済代行会社名。
     * publicKey [string] : 決済用ワンタイムトークンを取得するためのAPI接続用公開キー。　
 
-現在は設定できる決済方法は１つだけ、決済手段は"creditcard"のみ設定可能です。    
+現在は設定できる決済方法は１つだけ。"creditcard"のみ設定可能です。    
