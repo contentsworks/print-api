@@ -336,8 +336,7 @@ HTTP ステータスコードとともに結果を返します。
  * totalImageCount [number] : 全イメージエリアの数。
  * pages : ページの要素。
    * page [number] : ページの番号。
-   * pageType [string] : ページの種類。（Jacket：表紙, Body：本文, Front/Tobira：扉, Imprint/Colophon：奥付）
-
+   * pageType [string] : ページの種類。（Jacket：表紙, Front：扉, Body：本文, Colophon：奥付）
    * images : ページの画像エリア情報
      * areaID [string] : page内で一意となる画像エリアID。
      * minWidth [number] : 最小のwidth(px)。
@@ -570,7 +569,7 @@ editKeyを指定した場合、指定したアイテムのみ返します。
  * totalImageCount [number] : 全イメージエリアの数。
  * pages : ページの要素。
    * page [number] : ページの番号。
-   * pageType [string] : ページの種類。（Jacket：表紙, Front/Tobira:扉, Body：本文, Imprint/Colophon：奥付）
+   * pageType [string] : ページの種類。（Jacket：表紙, Tobira:扉, Body：本文, Imprint：奥付）
    * images : ページの画像エリア情報
      * areaID [string] : page内で一意となる画像エリアID。
      * minWidth [number] : 最小のwidth(px)。
@@ -1290,7 +1289,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/items
 ### ***Request***
-* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 
@@ -1446,7 +1445,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/deliveries
 ### ***Request***
-* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1496,7 +1495,7 @@ images [
 ### ***Header*** : X-HTTP-Method-Override=PUT
 ### ***Url*** : /v1/carts/{cartNo}/purchasers
 ### ***Request***
-* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 ### ***Request Body***
 
@@ -1550,7 +1549,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/purchasers
 ### ***Request***
-* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1599,7 +1598,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/charges
 ### ***Request***
-* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1649,7 +1648,7 @@ images [
 ### ***Header*** : X-HTTP-Method-Override=PUT
 ### ***Url*** : /v1/carts/{cartNo}/payments
 ### ***Request***
-* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 ### ***Request Body***
 
@@ -1698,7 +1697,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/payments
 ### ***Request***
-* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1734,7 +1733,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}
 ### ***Request***
-* cartNo : カート番号を指定します。奥付カート開始APIで取得した番号を指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
