@@ -1,4 +1,4 @@
-# Photobook API仕様 ver 1.2.6
+# Photobook API仕様 ver 1.2.7
 
 Photobook APIの開発者向けのドキュメントです。
 
@@ -38,7 +38,7 @@ Photobook APIの開発者向けのドキュメントです。
 * [画像アップロード/更新 API](#画像アップロード更新-api) ...アップロード画像をエリアにダイレクトに配置
 * [画像配置/更新 API](#画像配置更新-api) ...アップロード済の画像をエリアに配置
 * [画像配置情報取得 API](#画像配置情報取得-api)
-* [画像流し込み配置/更新 API](#画像流し込み配置更新-api) ...アップロード済みの画像を一括指定で一括配置
+* [画像流し込み配置/更新 API](#画像流し込み配置更新-api) ...アップロード済の画像を一括指定で一括配置
 
 ### プレビュー
 * [プレビュー取得 API](#プレビュー取得-api)
@@ -244,22 +244,24 @@ HTTP ステータスコードとともに結果を返します。
     * テキストエリア
   * ...
 
-また、ページは4種類あり、表紙(Jacket), 本文(Body), 扉(Front), 奥付け(Colophon)があります。
+また、ページは4種類あり、表紙(Jacket), 扉(Front/Tobira), 本文(Body), 奥付(Colophon/Imprint)があります。
 ### 表紙(Jacket)
 表紙には、テキストエリアとしてタイトル、サブタイトル、著者名が設定できます。
 ![ジャケットイメージ](http://www.photoback.jp/Content/img/rough/item01.jpg "ジャケットイメージ")
 
-### 扉(Front)
+### 扉(Front/Tobira)
 扉は開いて最初のページにあり、表紙に入力したタイトル、サブタイトル、著者名が自動で設定されます。変更はできません。
 ページ番号は扉から開始するため、扉のページ番号は1になります。
 ![扉イメージ](http://www.photoback.jp/Content/img/rough/item06.jpg "扉イメージ")
 
 ### 本文(Body)
 アップロードした写真やテキストを配置するページが本文です。扉、扉裏（白紙）があるため、ページ番号は3から始まります。
+
 ![本文イメージ](http://www.photoback.jp/Content/img/rough/item04.jpg "本文イメージ")
 
-### 奥付け(Colophon)
+### 奥付(Colophon/Imprint)
 奥付は最終ページで扉と同じように表紙に入力したタイトル、サブタイトル、著者名が自動で設定されます。変更はできません。
+
 ![奥付イメージ](http://www.photoback.jp/Content/img/rough/item07.jpg "奥付イメージ")
 
 
@@ -282,7 +284,6 @@ HTTP ステータスコードとともに結果を返します。
             {
                 "page": 0,
                 "pageType": "Jacket",
-                "templateType": "Spread",
                 "images": [
                     {
                         "areaID": "JACKET",
@@ -294,86 +295,38 @@ HTTP ステータスコードとともに結果を返します。
                 ],
                 "texts": [
                     {
-                        "areaID": "TITLE-AUTHOR",
+                        "areaID": "TITLE-TITLE",
                         "maxLength": 20,
                         "maxLineLength": 20,
                         "maxLineCount": 1
-                        "colors": [
-                            {
-                                "name": "Red",
-                                "rgb": "FFFFFF"
-                            },
-                            {
-                                "name": "Blue",
-                                "rgb": "0000FF"
-                            },...
-                        ]
+                        "colors": []
                     },
                     {
                         "areaID": "TITLE-SUBTITLE",
                         "maxLength": 40,
                         "maxLineLength": 40,
                         "maxLineCount": 1
-                        "colors": [
-                            {
-                                "name": "Red",
-                                "rgb": "FFFFFF"
-                            },
-                            {
-                                "name": "Blue",
-                                "rgb": "0000FF"
-                            },...
-                        ]
+                        "colors": []
                     },
                     {
-                        "areaID": "TITLE-TITLE",
+                        "areaID": "TITLE-AUTHOR",
                         "maxLength": 20,
                         "maxLineLength": 20,
                         "maxLineCount": 1
-                        "colors": [
-                            {
-                                "name": "Red",
-                                "rgb": "FFFFFF"
-                            },
-                            {
-                                "name": "Blue",
-                                "rgb": "0000FF"
-                            },...
-                        ]
+                        "colors": []                            
                     }
-                ]
+                ],
+                "templateType": "Spread",
+                "templateId": null,
             },
             {
                 "page": 1,
-                "pageType": "Body",
+                "pageType": "Front",
                 "templateType": "Right",
-                "images": [
-                    {
-                        "areaID": "PHOTO",
-                        "minWidth": 828,
-                        "minHeight": 621,
-                        "cutting": [],
-                        "fitType": ""
-                    },...
-                ],
-                "texts": [
-                    {
-                        "areaID": "TEXT-DEFAULT",
-                        "maxLength": 984,
-                        "maxLineLength": 41,
-                        "maxLineCount": 24
-                        "colors": [
-                            {
-                                "name": "Red",
-                                "rgb": "FFFFFF"
-                            },
-                            {
-                                "name": "Blue",
-                                "rgb": "0000FF"
-                            },...
-                        ]
-                    },...
-                ]
+                "images": [],
+                "texts": [],
+                "templateType": "Right",
+                "templateId": null
             },...
         ]
     }
@@ -383,8 +336,7 @@ HTTP ステータスコードとともに結果を返します。
  * totalImageCount [number] : 全イメージエリアの数。
  * pages : ページの要素。
    * page [number] : ページの番号。
-   * pageType [string] : ページの種類。（Jacket：表紙, Body：本文, Front：扉, Colophon：奥付け）
-   * TemplateType : テンプレートの種類。（Left：左ページ, Right：右ページ, Spread：見開き）
+   * pageType [string] : ページの種類。（Jacket：表紙, Front：扉, Body：本文, Colophon：奥付）
    * images : ページの画像エリア情報
      * areaID [string] : page内で一意となる画像エリアID。
      * minWidth [number] : 最小のwidth(px)。
@@ -398,7 +350,9 @@ HTTP ステータスコードとともに結果を返します。
      * maxLineCount [number] : 最大の行数。
      * colors : 色の要素
        * name [string] : 色の名称。  
-       * rgb [string] : 色RGB値。  
+       * rgb [string] : 色RGB値。
+   * templateType[string] : テンプレートの種類。（Left：左ページ, Right：右ページ, Spread：見開き）
+   * templateId[number] : テンプレートを識別するためのId。
 
 ※　イメージのminWidth/minHeightを下回ると印刷した際に画像が荒れる可能性があります。   
 ※　テキストのmaxLength、およびmaxLineCountを超えないように文字を設定してください。
@@ -420,13 +374,15 @@ HTTP ステータスコードとともに結果を返します。
 {
     "editKey": "3800604642207821313",
     "userId": "123",
-    "expireDate": "2016/1/1"
+    "expireDate": "2016/1/1",
+    "sharekey": "123abc"
 }
 ```
 
 * editKey [string] : 作成する作品を識別するためのキーです。
 * userId [number] : 現在の認証ユーザーを識別するIDです。
-* expireDate [datetime] : 作成する作品の編集期限です。発行日を基準にして+7日となります。例）2016/1/1に取得→2016/1/8
+* expireDate [datetime] : 作成する作品の編集期限です。デフォルトでは、editKeyの生成日を基準にして+7日となります。例）2016/1/1に取得→2016/1/8
+* sharekey [string] : 編集データの共有を行うためのキーです。
 
 
 | ステータスコード | 意味|エラーコード|
@@ -454,7 +410,12 @@ HTTP ステータスコードとともに結果を返します。
       "maxOrderCopy": 100,
       "expirationDate": "2016/03/10",
       "lastEditTime": "2016-02-25T14:14:03.463",
-      "createTime": "2016-02-25T10:25:50.403"
+      "createTime": "2016-02-25T10:25:50.403",
+      "shareKey": "",
+      "albumId": null,
+      "itemName": "POCKETよこ",
+      "page": 16,
+      "status": 1
     },...
 }
 ```
@@ -470,6 +431,11 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 * expirationDate [datetime] : editKeyの有効期限です。有効期限を超過すると注文や編集はできません
 * lastEditTime [datetime] : 編集データの最終更新日
 * createTime [datetime] : editKeyの生成日
+* shareKey [string] : 編集データの共有を行うためのキー
+* albumId [string] : アルバムを識別するためのID。IDが設定されていない場合はnullを返します。
+* itemName [string] : アイテムの名称
+* page [number] : アイテムのページ数
+* status [number] : 編集データの状態(1: 作成・編集中、2: 編集確定、4: 注文済み、9: 削除・キャンセル)
 
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -522,8 +488,6 @@ editKeyを指定した場合、指定したアイテムのみ返します。
             {
                 "page": 0,
                 "pageType": "Jacket",
-                "templateType": "Spread",
-                "templateId" : "BTRGSL00300"
                 "images": [
                     {
                         "areaID": "JACKET",
@@ -538,55 +502,64 @@ editKeyを指定した場合、指定したアイテムのみ返します。
                 ],
                 "texts": [
                     {
-                        "areaID": "TITLE-AUTHOR",
+                        "areaID": "TITLE-TITLE",
                         "maxLength": 20,
-                        "maxLineCount": 1
+                        "maxLineLength: 13,
+                        "maxLineCount": 1,
+                        "colors": [
+                            {
+                                "name": "Black",
+                                "rgb": "000"
+                            },
+                            {
+                                "name": "Chrcl",
+                                "rgb": "78716D"
+                            },...
+                        ]
                     },
                     {
                         "areaID": "TITLE-SUBTITLE",
                         "maxLength": 40,
-                        "maxLineCount": 1
+                        "maxLineLength": 41,
+                        "maxLineCount": 1,
+                        "colors": [
+                            {
+                                "name": "Black",
+                                "rgb": "000"
+                            },
+                            {
+                                "name": "Chrcl",
+                                "rgb": "78716D"
+                            },...
+                        ]
                     },
                     {
-                        "areaID": "TITLE-TITLE",
+                        "areaID": "TITLE-AUTHOR",
                         "maxLength": 20,
-                        "maxLineCount": 1
+                        "maxLineLength": 41,
+                        "maxLineCount": 1,
+                        "colors": [
+                            {
+                                "name": "Black",
+                                "rgb": "000"
+                            },
+                            {
+                                "name": "Chrcl",
+                                "rgb": "78716D"
+                            },...
+                        ]
                     }
-                ]
+                ],
+                "templateType": "Spread",
+                "templateId" : "BTRGSL00300"
             },
             {
                 "page": 1,
-                "pageType": "Body",
+                "pageType": "Tobira",
+                "images": [],
+                "texts": [],
                 "templateType": "Right",
-                "images": [
-                    {
-                        "areaID": "PHOTO",
-                        "minWidth": 828,
-                        "minHeight": 621,
-                        "cutting": [
-                            "Top",
-                            "Right"
-                        ],
-                        "fitType": "LFit"
-                    },...
-                ],
-                "texts": [
-                    {
-                        "areaID": "TEXT-DEFAULT",
-                        "maxLength": 984,
-                        "maxLineCount": 24
-                        "colors": [
-                            {
-                                "name": "Red",
-                                "rgb": "FFFFFF"
-                            },
-                            {
-                                "name": "Blue",
-                                "rgb": "0000FF"
-                            },...
-                        ]
-                    },...
-                ]
+                "templateId": "BTRGSR00100"                
             },...
         ]
     }
@@ -596,9 +569,7 @@ editKeyを指定した場合、指定したアイテムのみ返します。
  * totalImageCount [number] : 全イメージエリアの数。
  * pages : ページの要素。
    * page [number] : ページの番号。
-   * pageType [string] : ページの種類。（Jacket：表紙, Body：本文, Front：扉, Colophon：奥付け）
-   * templateType : テンプレートの種類。（Left：左ページ, Right：右ページ, Spread：見開き）
-   * templateId : テンプレートを識別するためのキーです。
+   * pageType [string] : ページの種類。（Jacket：表紙, Tobira:扉, Body：本文, Imprint：奥付）
    * images : ページの画像エリア情報
      * areaID [string] : page内で一意となる画像エリアID。
      * minWidth [number] : 最小のwidth(px)。
@@ -608,10 +579,13 @@ editKeyを指定した場合、指定したアイテムのみ返します。
    * texts : ページのテキストエリア情報
      * areaID [string] : page内で一意となる画像エリアID。
      * maxLength [number] : エリアに入力できる最大の文字数。
+     * maxLineLength [number] : 一行に入力できる最大の文字数。
      * maxLineCount [number] : 最大の行数。
      * colors : 色の要素
        * name [string] : 色の名称。  
-       * rgb [string] : 色RGB値。  
+       * rgb [string] : 色RGB値。 
+   * templateType : テンプレートの種類。（Left：左ページ, Right：右ページ, Spread：見開き）
+   * templateId : テンプレートを識別するためのIdです。
 
 ※　イメージのminWidth/minHeightを下回ると印刷した際に画像が荒れる可能性があります。   
 ※　テキストのmaxLength、およびmaxLineCountを超えないように文字を設定してください。
@@ -631,6 +605,8 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 * pageNo : ページ番号を指定してください。
 
+### ***Request Body***
+
 ```
 {
     "texts": [
@@ -645,8 +621,8 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 * texts : テキストエリア。
  * areaID [string] : エリアID、「商品情報取得 API」にて取得したエリアIDを設定してください。
  * value [string] : テキストエリアに入力する値を設定してください。
-※valueには、「商品情報取得 API」の最大文字数以上は設定しないようにしてください。  
-※削除する場合は、valueに空白を設定してください。
+※valueには、「商品情報取得 API」の最大文字数(maxLength)以上は設定しないようにしてください。  
+※テキストを削除する場合は、valueに空白を設定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -697,16 +673,16 @@ editKeyを指定した場合、指定したアイテムのみ返します。
         {
             "areaID": "TEXT01-DEFAULT",
             "value": "おしゃれな仕上がりと美しいレイアウトが評判のフォトブック作成サービスです。"
-            "fontCode": "16"
             "fontColor": "Black"
+            "fontCode": "16"
             "fontSizeType": "Large"
             "align": "Start"
         }
     ],...
 }
 ```
-* fontCode[number] : テキストのフォントコードを取得します。
 * fontColor[string] : テキストのカラーを取得します。（Black,White,Red,Green,Blue,Chrcl,Rose,Grass,Sky,Orange）
+* fontCode[number] : テキストのフォントコードを取得します。
 * fontSizeType[string] : テキストのサイズを取得します。（Large/Middle/Small）
 * align[string] : 進行方向に対するアライメント（横書きは垂直、縦書きは水平）を取得します。(Start/Middle/End)
 
@@ -729,7 +705,7 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 
 ### ***Request Body***
 アップロードする画像ファイルを含めてください。ファイルが複数ある場合は一つ目のみが適用されます。
-※最大画像サイズは20MB、対応するフォーマットはjpegのみです。
+※最大画像サイズは20MB、対応するフォーマットはjpegとpngのみです。
 
 ### ***Response***
 
@@ -749,6 +725,7 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 |413 (Request Entity Too Large)|ファイルサイズが大きすぎます。|toolarge_file|
 |415 (Unsupported Media Type)|ファイル形式が不明です。|unsupported_file|
 |415 (Unsupported Media Type)|画像ファイルを選択してください。|unsupported_file|
+
 ```
 【エラーの例】
 {
@@ -756,10 +733,11 @@ editKeyを指定した場合、指定したアイテムのみ返します。
         {
             "errorCode": "unsupported_file",
             "message": "ファイル形式が不明です。",
-            "moreInfo": "ご利用できる画像ファイル形式はjpeg（jpg）のみです。"
+            "moreInfo": "ご利用できる画像ファイル形式はjpeg（jpg）とpngのみです。"
         },...
     ]
 }
+
 ```
 
 ---
@@ -768,15 +746,15 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 ### ***Url*** : /v1/{editKey}/images/
 ### ***QueryString***
 * order : 画像のソート順を指定してください。
- + page : ページ(＆エリア)順にソート
- + upload(defalut) : アップロード順にソート
+    * page : ページ(＆エリア)順にソート
+    * upload(defalut) : アップロード順にソート
 * detail : 結果の返却方法を指定してください。
- + true : 詳細モード
- + false(default) : 簡略モード
+    * true : 詳細モード
+    * false(default) : 簡略モード
 * filter : 返される画像の種類にフィルターをかけます。
- + user : ユーザーによってアップされた画像のみレスポンスに含まれます。
- + 指定なし(default) : 使用しているすべての画像をレスポンスに含めます。  
- ※固定で配置されている画像もレスポンスに含まれます。
+    * user : ユーザーによってアップされた画像のみレスポンスに含まれます。
+    * 指定なし(default) : 使用しているすべての画像をレスポンスに含めます。  
+    ※固定で配置されている画像もレスポンスに含まれます。
 
 ### ***Request***
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
@@ -787,48 +765,60 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 {
 	"images":[
     	{
-        	"imageId":"2-158-4-528-20160209191142-277116579",
-        	"page": "0",
-        	"areaId": "PHOTO01",
-        	"width": "1024"
-        	"height": "768"
-        	"rotate": "90"
+            "page": "0",
+            "areaId": "PHOTO01",
+            "width": "1024"
+            "height": "768"
+            "rotate": "90",
+            "imageId":"2-158-4-528-20160209191142-277116579",
+            "containerName": null,
+            "url": null
         },
         {
-        	"imageId":"2-158-4-528-20160201456546-678855441",
-        	"page": "",
-        	"areaId": "",
-        	"width": ""
-        	"height": ""
-        	"rotate": ""
+            "page": "",
+            "areaId": "",
+            "width": ""
+            "height": ""
+            "rotate": "",
+            "imageId":"2-158-4-528-20160201456546-678855441",
+            "containerName": null,
+            "url": null
         },...
     ]
 }
 
 ```
 ※未配置画像の場合は、"page""areaId""width""height""rotate"は空となる。
-* imageId [string]: アップロードした画像を識別する画像ID。
 * page [int]: ページ番号。
-* areaId [string]: 配置されているイメージエリアのID。
+* imageId [string]: アップロードした画像を識別する画像ID。
 * width  [int]: 画像の幅(px)。
 * height [int]: 画像の高さ(px)。
 * rotate [int]: 画像の回転角度。
+* areaId [string]: 配置されているイメージエリアのID。
+* containerName[string]: アップロード先コンテナ名
+* url[string]: アップロード先のエンドポイント
 
 #### 簡略モード
 ```
 {
 	"images":[
     	{
-        	"imageId":"2-158-4-528-20160209191142-277116579"
+            "imageId":"2-158-4-528-20160209191142-277116579",
+            "containerName": null,
+            "url": null
         },
         {
-        	"imageId":"2-158-4-528-20160201456546-678855441"
+            "imageId":"2-158-4-528-20160201456546-678855441"
+            "containerName": null,
+            "url": null
         },...
     ]
 }
 
 ```
 * imageId [string]: アップロードした画像を識別する画像ID。
+* containerName[string]: アップロード先コンテナ名
+* url[string]: アップロード先のエンドポイント
 
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -836,6 +826,7 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 |406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
 |406 (Not Acceptable)|指定されたorderが不正です。|notacceptable_order|
 |404 (Not Found)|ファイルが存在しません。|notfound_file|
+
 ```
 【エラーの例】
 {
@@ -847,6 +838,7 @@ editKeyを指定した場合、指定したアイテムのみ返します。
         },...
     ]
 }
+
 ```
 ---
 ## アップロード済画像取得 API
@@ -857,7 +849,7 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 * imageId : アップロードした画像を識別する画像ID。
 
 ### ***Response***
-imageIdで指定されたアップロード済画像(jpg)データを返します(バイナリ形式)。
+imageIdで指定されたアップロード済画像(jpg,png)データを返します(バイナリ形式)。
 
 
 | ステータスコード | 意味|エラーコード|
@@ -865,6 +857,7 @@ imageIdで指定されたアップロード済画像(jpg)データを返しま�
 |200 (OK)|成功|-|
 |404 (Not Found)|ファイルが存在しません。|notfound_file|
 |406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+
 ```
 【エラーの例】
 {
@@ -877,6 +870,7 @@ imageIdで指定されたアップロード済画像(jpg)データを返しま�
     ]
 }
 ```
+
 ---
 ## アップロード済画像削除 API
 ### ***Method*** : POST
@@ -887,7 +881,7 @@ imageIdで指定されたアップロード済画像(jpg)データを返しま�
 * imageId : アップロードした画像を識別する画像ID。
 
 ### ***Response***
-imageIdで指定されたアップロード済画像(jpg)データを削除します。
+imageIdで指定されたアップロード済画像(jpg,png)データを削除します。
 使用済みの画像は指定できません。
 
 
@@ -982,7 +976,7 @@ imageIdで指定されたアップロード済画像(jpg)データを削除し�
 ### ***Request Body***
 アップロードする画像ファイルを含めてください。ファイルが複数ある場合は一つ目のみが適用されます。
 ※存在しない場合は、エリアに配置された画像ファイルが削除されます。  
-※最大画像サイズは20MB、対応するフォーマットはjpegのみです。
+※最大画像サイズは20MB、対応するフォーマットはjpegとpngのみです。
 
 ### ***Response***
 ```
@@ -1002,6 +996,7 @@ imageIdで指定されたアップロード済画像(jpg)データを削除し�
 |415 (Unsupported Media Type)|ファイル形式が不明です。|unsupported_file|
 |416 (Requested Range Not Satisfiable)|ファイルの幅が小さすぎます。|tooshort_width|
 |416 (Requested Range Not Satisfiable)|ファイルの高さが小さすぎます。|tooshort_height|
+
 ```
 【エラーの例】
 {
@@ -1009,11 +1004,13 @@ imageIdで指定されたアップロード済画像(jpg)データを削除し�
         {
             "errorCode": "unsupported_file",
             "message": "ファイル形式が不明です。",
-            "moreInfo": "ご利用できる画像ファイル形式はjpeg（jpg）のみです。"
+            "moreInfo": "ご利用できる画像ファイル形式はjpeg（jpg）とpngのみです。"
         },...
     ]
 }
+
 ```
+
 ---
 ## 画像配置/更新 API
 アップロード済の画像を指定エリアに配置します。
@@ -1057,6 +1054,7 @@ imageIdで指定されたアップロード済画像(jpg)データを削除し�
 |416 (Requested Range Not Satisfiable)|ファイルの幅が小さすぎます。|tooshort_width|
 |416 (Requested Range Not Satisfiable)|ファイルの高さが小さすぎます。|tooshort_height|
 |416 (Requested Range Not Satisfiable)|拡大率が不正です。(0.1～1.0)|tooshort_scale|
+
 ```
 【エラーの例】
 {
@@ -1068,6 +1066,7 @@ imageIdで指定されたアップロード済画像(jpg)データを削除し�
         },...
     ]
 }
+
 ```
 
 ---
@@ -1144,6 +1143,7 @@ images [
 |415 (Unsupported Media Type)|ファイル形式が不明です。|unsupported_file|
 |416 (Requested Range Not Satisfiable)|ファイルの幅が小さすぎます。|tooshort_width|
 |416 (Requested Range Not Satisfiable)|ファイルの高さが小さすぎます。|tooshort_height|
+
 ```
 【エラーの例】
 {
@@ -1151,10 +1151,11 @@ images [
         {
             "errorCode": "unsupported_file",
             "message": "ファイル形式が不明です。",
-            "moreInfo": "ご利用できる画像ファイル形式はjpeg（jpg）のみです。"
+            "moreInfo": "ご利用できる画像ファイル形式はjpeg（jpg）とpngのみです。"
         },...
     ]
 }
+
 ```
 
 ---
@@ -1243,16 +1244,16 @@ images [
     * page [number] : ページの番号。
 * warnings : Warningのリスト
     * areaId [string] : page内で一意となるエリアID。
-    * message [string] : Warningの内容
-	
+    * message [string] : Warningの内容    
+
     |  | 内容 |
     |:-----------|:------------|
     |Warning|画像が配置されていません。|
     |Warning|テキストが入力されていません。|
     |Warning|写真サイズが不足しています。印象時に荒く見える恐れがあります。|
     |Warning|テキストが空です。(テキストが空白文字の場合に表示されます)|
-	
-	
+
+
 * errors : Errorのリスト
     * areaId [string] : page内で一意となるエリアID。
     * message [string] : Errorの内容
@@ -1270,13 +1271,14 @@ images [
 ```
 {
     "cartNo": "6302524379815465985",
-    "expireDate": "2016/1/1"
+    "expireDate": "2016/1/1",
+    "cartUrl": null
 }
 ```
 
-* cartNo [string] : カート情報を識別するためのキーです。
-* expireDate [datetime] : カートの有効期限です。発行日を基準にして+7日となります。例）2016/1/1に取得→2016/1/8
-
+* cartNo [string] : カート情報を識別するための番号です。
+* expireDate [datetime] : カートの有効期限です。デフォルトでは発行日を基準にして+7日となります。例）2016/1/1に取得→2016/1/8
+* cartUrl [string] : カートのWebサイトを利用する場合の遷移先URLです。
 
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -1287,7 +1289,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/items
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 
@@ -1333,7 +1335,7 @@ images [
 ### ***Method*** : POST
 ### ***Url*** : /v1/carts/{cartNo}/items/{editKey}
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 
 
@@ -1349,7 +1351,7 @@ images [
 ### ***Header*** : X-HTTP-Method-Override=PUT
 ### ***Url*** : /v1/carts/{cartNo}/items/{editKey}
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 
 ```
@@ -1359,7 +1361,7 @@ images [
 ```
 
 * copy [number] : 注文する作品の冊数。
-※ 一回の注文での最大冊数は、作品ごとに決まっておりデフォルトでは最大100冊までです。
+※ 一回の注文での最大冊数は作品ごとに決まっており、デフォルトでは最大100冊までです。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1376,7 +1378,7 @@ images [
 ### ***Header*** : X-HTTP-Method-Override=DELETE
 ### ***Url*** : /v1/carts/{cartNo}/items/{editKey}
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 * editKey : 作品キー取得 APIにて発行したキーを指定してください。
 
 ### ***Response***
@@ -1392,8 +1394,10 @@ images [
 ### ***Header*** : X-HTTP-Method-Override=PUT
 ### ***Url*** : /v1/carts/{cartNo}/deliveries
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
+
+### ***Request Body***
 ```
 {
     "delivery" : 
@@ -1408,7 +1412,8 @@ images [
         "company" : "コンテンツワークス株式会社",
         "companyBranch" : "千代田支店",
         "telephone" : "03-6674-2250",
-        "email" : "support@mono-link.jp"
+        "email" : "support@mono-link.jp",
+        "isDescribed": 1
     }
 }
 ```
@@ -1425,6 +1430,7 @@ images [
     * companyBranch(任意)  [string (25)]: お届け先の支店名。
     * telephone [string (20)] : お届け先の電話番号(ハイフンなしでもOK)。
     * email(任意)  [string (256)] : お届け先のEMailアドレス。
+    * isDescribed(任意) [number] : 納品書記載可否フラグ。(1:可、0:否)
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1439,7 +1445,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/deliveries
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1462,7 +1468,8 @@ images [
             "company" : "コンテンツワークス株式会社",
             "companyBranch" : "千代田支店",
             "telephone" : "03-6674-2250",
-            "email" : "support@mono-link.jp"
+            "email" : "support@mono-link.jp",
+            "isDescribed": 1
         }
 }
 ```
@@ -1479,6 +1486,8 @@ images [
     * companyBranch(任意) [string] : お届け先の支店名。
     * telephone [string] : お届け先の電話番号。
     * email(任意) [string (256)] : お届け先のEMailアドレス。
+    * isDescribed [number] : 納品書記載可否フラグ。(1:可、0:否)
+    
 
 ---
 ## カート 差出人情報登録/更新 API
@@ -1486,7 +1495,9 @@ images [
 ### ***Header*** : X-HTTP-Method-Override=PUT
 ### ***Url*** : /v1/carts/{cartNo}/purchasers
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
+
+### ***Request Body***
 
 ```
 {
@@ -1519,7 +1530,7 @@ images [
     * addressLine1 [string (50)] : 差出人の町村番地。
     * addressLine2(任意)  [string (50)]: 差出人の建物名。
     * company(任意)  [string (25)]: 差出人の会社名。
-    * telephone [string (20)] : 差出人の電話番号(ハイフンなしでもOK)。
+    * telephone [string (13)] : 差出人の電話番号(ハイフンなしでもOK)。
     * email(任意)  [string (256)] : 差出人のEMailアドレス。
 
 ### ***Response***
@@ -1538,7 +1549,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/purchasers
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1587,7 +1598,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/charges
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1598,6 +1609,7 @@ images [
 ```
 {
     "amount" : 4000,
+    "discount" : -1000,
     "billingItems" : [
         {
             "billingItem" : "商品代金",
@@ -1607,8 +1619,7 @@ images [
             "billingItem" : "配送料",
             "amount" : 500
         }, ...
-    ],
-    "discount" : -1000,
+    ],    
     "discountItems" : [
         {
             "discountRuleCode" : "ボリュームディスカウント",
@@ -1623,10 +1634,10 @@ images [
 ```
 
 * amount [number] : 請求合計金額
+* discount [number] : 割引合計金額
 * billingItems : 請求項目要素
     * billingItem [string] : 請求項目。
     * amount [number] : 請求項目の金額。
-* discount [number] : 割引合計金額
 * discountItems : 割引要素
     * discountRuleCode [string] : 割引名。
     * discountPrice [number] : 割引の金額。
@@ -1637,7 +1648,9 @@ images [
 ### ***Header*** : X-HTTP-Method-Override=PUT
 ### ***Url*** : /v1/carts/{cartNo}/payments
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
+
+### ***Request Body***
 
 ```
 {
@@ -1684,7 +1697,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}/payments
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1720,7 +1733,7 @@ images [
 ### ***Method*** : GET
 ### ***Url*** : /v1/carts/{cartNo}
 ### ***Request***
-* cartNo : カート番号を指定します。カート開始APIで取得したコードを指定してください。
+* cartNo : カート番号を指定します。カート開始APIで取得した番号を指定してください。
 
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
@@ -1728,28 +1741,35 @@ images [
 |200 (OK)|成功|-|
 |406 (Not Acceptable)|存在しないcartNoが指定されました。|notacceptable_cartno|
 |406 (Not Acceptable)|無効なcartNoが指定されました。|expired_cartno|
+
 ```
 {
     "cart": {
         "cartNo": "6302524379815465985",
-        "expireDate": "2016/5/10",
+        "expireDate": "2019/7/14",
+        "amount" : 6100,
+        "discount" : -1000,
+        "creditStatus": null,
         "items": [
             {
                 "editKey": "4941036644930230273",
                 "title": "写真日記（１）",
                 "copy": 2,
                 "unitPrice" : 1500,
-                "totalPrice" : 3000
+                "totalPrice" : 3000,
+                "maxOrderCopy": 0,
+                "createTime": "2019-06-24T14:24:47.83"
             },
             {
                 "editKey": "8207160303711806465",
                 "title": "写真日記（２）",
                 "copy": 3,
                 "unitPrice" : 1200,
-                "totalPrice" : 3600
+                "totalPrice" : 3600,
+                "maxOrderCopy": 0,
+                "createTime": "2019-06-24T14:40:47.83"
             }, ...
-        ],
-        "amount" : 6100,
+        ],        
         "billingItems" : [
             {
                 "billingItem" : "商品代金",
@@ -1767,7 +1787,12 @@ images [
             "expireMonth" : "**",
             "expireYear" : "**",
             "securityCode" : "***",
-            "name" : "***"
+            "name" : "***",
+            "paymentToken": ***,
+            "transactionId": ***,
+            "accessId": ***,
+            "accessPass": ***,
+            "amount": ***
         },
         "delivery" : 
         {
@@ -1781,7 +1806,8 @@ images [
             "company" : "コンテンツワークス株式会社",
             "companyBranch" : "千代田支店",
             "telephone" : "03-6674-2250",
-            "email" : "konten@mono-link.jp"
+            "email" : "konten@mono-link.jp",
+            "isDescribed": 0
         },
         "purchaser" : 
         {
@@ -1797,8 +1823,7 @@ images [
             "company" : "API株式会社",
             "telephone" : "03-1234-5678",
              "email" : "support@mono-link.jp"
-        },
-        "discount" : -1000,
+        },        
         "discountItems" : [
             {
                 "discountRuleCode" : "ボリュームディスカウント",
@@ -1811,19 +1836,23 @@ images [
         ]
     }
 }
+
 ```
+
 支払い情報は、クレジットカード番号の下4桁のみご確認いただけます。
 
 * cart
     * cartNo [string] : カートを管理するための番号です。
     * expireDate [datetime] : カートの有効期限を返します。
+    * amount [number] : 請求合計金額を返します(決済を行わない場合は0を返します)。
+    * discount [number] : 割引合計金額を返します。
+    * creditStatus[bool] : クレジットカード払いの与信ステータス
     * items : 注文の商品のリスト
         * editKey [string] : 作品キー取得 APIにて発行したキーを指定してください。
         * title [string] : 作品のタイトルを返します。
         * copy [number] : 注文された冊数を返します。
         * unitPrice [number] : 作品の単価(決済を行わない場合は0を返します)。
-        * totalPrice [number] : 作品の合計(決済を行わない場合は0を返します)。
-    * amount [number] : 請求合計金額を返します(決済を行わない場合は0を返します)。
+        * totalPrice [number] : 作品の合計(決済を行わない場合は0を返します)。    
     * billingItems : 請求項目要素
         * billingItem [string] : 請求項目名。
         * amount [number] : 請求項目の金額。
@@ -1834,6 +1863,11 @@ images [
         * expireYear [string] : 有効期限の年(YY形式)。
         * securityCode [string] : セキュリティコード。
         * name [string] : クレジットカードの名義。
+        * paymentToken[string] : 決済代行会社が作成した決済用ワンタイムトークン文字列。
+        * transactionId[string] : トランザクションID
+        * accessId[string] :取引ID 
+        * accessPass[string] : 取引パスワード
+        * amount[number] :利用金額
     * delivery : 注文の配送先の要素
         * familyName [string] : お届け先のお名前（姓）。
         * firstName [string] : お届け先のお名前（名）。
@@ -1846,6 +1880,7 @@ images [
         * companyBranch(任意) [string] : お届け先の支店名。
         * telephone [string] : お届け先の電話番号。
         * email(任意) [string] : お届け先のEMailアドレス。
+        * isDescribed [number]: 納品書記載可否フラグ。(1:可、0:否)
     * purchaser : 注文の差出人の要素
         * familyName [string] : 差出人のお名前（姓）。
         * firstName [string] : 差出人のお名前（名）。
@@ -1858,8 +1893,7 @@ images [
         * addressLine2(任意) [string] : お届け先の建物名。
         * company(任意) [string] : お届け先の会社名。
         * telephone [string] : お届け先の電話番号。
-        * email(任意) [string] : お届け先のEMailアドレス。
-    * discount [number] : 割引合計金額を返します。
+        * email(任意) [string] : お届け先のEMailアドレス。    
     * discountItems : 割引要素
         * discountRuleCode [string] : 割引名。
         * discountPrice [number] : 割引の金額。
@@ -1869,8 +1903,11 @@ images [
 ### ***Method*** : POST
 ### ***Url*** : /v1/orders/{cartNo}
 ### ***Request***
-* cartNo [string] (任意) : カート番号を指定します。カート開始APIで取得したコードを指定してください。  
+* cartNo [string] (任意) : カート番号を指定します。カート開始APIで取得した番号を指定してください。  
 ※cartNoを指定した場合、Requestデータを設定する必要はありません。もしcartNoとRequestデータの両方を設定した場合は、Requestデータは無視されます。
+
+### ***Request Body***
+
 ```
 {
     "items" : [
@@ -1891,7 +1928,8 @@ images [
             "company" : "コンテンツワークス株式会社",
             "companyBranch" : "千代田支店",
             "telephone" : "03-6674-2250",
-            "email" : "konten@mono-link.jp"
+            "email" : "konten@mono-link.jp",
+            "IsDescribed" : 1
         },
         "purchaser" : 
         {
@@ -1906,7 +1944,7 @@ images [
             "addressLine2" : "APIビル45F",
             "company" : "API株式会社",
             "telephone" : "03-1234-5678",
-             "email" : "support@mono-link.jp"
+            "email" : "support@mono-link.jp"
         ｝
 }
 ```
@@ -1927,8 +1965,9 @@ images [
     * addressLine2(任意)  [string (50)]: お届け先の建物名。
     * company(任意)  [string (25)]: お届け先の会社名。
     * companyBranch(任意)  [string (25)]: お届け先の支店名。
-    * telephone [string (20)] : お届け先の電話番号(ハイフンなしでもOK)。
+    * telephone [string (13)] : お届け先の電話番号(ハイフンなしでもOK)。
     * email(任意) [string (256)] : お届け先のEMailアドレス。
+    * isDescribed [number]: 納品書記載可否フラグ。(1:可、0:否)
 * purchaser(任意) : 注文の差出人要素
     * familyName [string (25)] : 差出人のお名前（姓）。
     * firstName [string (25)] : 差出人のお名前（名）。
@@ -1940,10 +1979,10 @@ images [
     * addressLine1 [string (50)] : 差出人の町村番地。
     * addressLine2(任意)  [string (50)]: 差出人の建物名。
     * company(任意)  [string (25)]: お差出人の会社名。
-    * telephone [string (20)] : 差出人の電話番号(ハイフンなしでもOK)。
+    * telephone [string (13)] : 差出人の電話番号(ハイフンなしでもOK)。
     * email(任意)  [string (256)] : 差出人のEMailアドレス。
 
----
+
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -2002,10 +2041,10 @@ images [
 {
     "orders": [
         {
+            "orderId": 14744,
             "orderNo" : "CWIP-90123456",
             "orderDateTime" : "2017/1/1 00:00:00",
-            "status" : 2,
-            "tempOrderLimitDate" : "2017/1/15 00:00:00",
+            "status" : 1,
             "items" : [
                 {
                     editKey : "3800604642207821313",
@@ -2016,6 +2055,7 @@ images [
                 },...
             ],
             "amount" : 15500,
+            "discount" : -1000,
         	"billingItems" : [
                 {
                     "billingItem" : "商品代金",
@@ -2041,8 +2081,12 @@ images [
                 "telephone" : "03-6674-2250",
                 "email" : "support@mono-link.jp",
                 "shipDueDate" : "2017/1/1",
-                "shippingNo" : "9876543210"
-            },...
+                "shippingNo" : "9876543210",
+                "shipDate" : "2017/1/10",
+                "shippingMethod" : "mail",
+                "deliveryRequestDate" : null,
+                "deliveryRequestTime" : null,
+            },
             "purchaser" : 
             {
                 "familyName" : "紺天",
@@ -2056,11 +2100,8 @@ images [
                 "addressLine2" : "Daiwa神保町ビル5F",
                 "company" : "コンテンツワークス株式会社",
                 "telephone" : "03-6674-2250",
-                "email" : "support@mono-link.jp",
-                "shipDueDate" : "2017/1/1",
-                "shippingNo" : "9876543210"
-            },
-            "discount" : -1000
+                "email" : "support@mono-link.jp"
+            },            
             "discountItems" : [
                 {
                     "discountRuleCode" : "ボリュームディスカウント",
@@ -2070,7 +2111,10 @@ images [
                     "discountRuleCode" : "送料無料",
                     "discountPrice" : -400
                 }, ...
-            ]
+            ],
+            "tempOrderLimitDate" : "2017/1/15 00:00:00",
+            "expireDate": "2017/1/31 00:00:00",
+            "cancelLimitDate": "2017/1/2 00:00:00"
         },...
     ],...
 }
@@ -2079,9 +2123,8 @@ images [
 
 * orders
     * orderNo [string] : 注文を管理するための番号です。
-    * orderDateTime [string] : 注文日時間。
+    * orderDateTime [datetime] : 注文日時。
     * status [number] : 注文のステータス（1:注文受付, 2:注文確定, 3:注文保留, 4:出荷済, 9:キャンセル）
-    * tempOrderLimitDate [string] : 仮注文を確定注文にすることがでる期限
     * items : 注文の商品のリスト
         * editKey [string] : 作品キー取得 APIにて発行したキーを指定してください。
         * title [string] : 作品のタイトルを返します。
@@ -2105,8 +2148,12 @@ images [
         * companyBranch(任意) [string] : お届け先の支店名。
         * telephone [string] : お届け先の電話番号。
         * email(任意) [string (256)] : お届け先のEMailアドレス。
-        * shipDueDate [string] : 出荷予定日。
+        * shipDueDate [datetime] : 出荷予定日。
         * shippingNo [string] : 配送伝票番号。
+        * shipDate [datetime] : 出荷日。
+        * shippingMethod [string] : 配送方法
+        * deliveryRequestDate [datetime] : 配送日指定
+        * deliveryRequestTime [datetime] : 配送時間帯指定
     * purchaser : 注文の差出人要素
         * familyName [string] : 差出人のお名前（姓）。
         * firstName [string] : 差出人のお名前（名）。
@@ -2124,6 +2171,9 @@ images [
 	* discountItems : 割引要素
     	* discountRuleCode [string] : 割引名。
     	* discountPrice [number] : 割引の金額。
+    * tempOrderLimitDate [datetime] : 仮注文を確定注文にすることができる期限
+    * expireDate[datetime] : 注文の有効期限
+    * cancelLimitDate [datetime] : 注文をキャンセルすることができる期限
 
 ※ 注文受付から24時間以内には、注文確定となり出荷予定日が決まります。
 
@@ -2165,7 +2215,7 @@ images [
 ### ***Request***
 * orderNo [string] : 注文確定 APIにて発行したOrderNoをご指定下さい。(CWIP-90123456の形式)  
 
----
+
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -2202,7 +2252,7 @@ images [
 ### ***Request***
 * zipCode [string] : 郵便番号を指定します。 (ZZZZZZZ形式 or ZZZ-ZZZZ形式）
 
----
+
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -2255,7 +2305,7 @@ images [
 * to : カレンダーを生成する終了年月を指定します。（yyyyMM形式 or yyyy-MM形式）  
 ※ from,toを指定しない場合、操作月から12ヶ月分のカレンダーを生成します。  
 
----
+
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -2289,7 +2339,7 @@ images [
 ### ***Request***
 * editKeys [string]　(必須) : 作品キー取得 APIにて発行したキーを指定してください。  
 
----
+
 ### ***Response***
 ```
 {
@@ -2471,6 +2521,8 @@ images [
 ### ***Request***
 * editKeys [string]　(必須) : 作品キー取得 APIにて発行したキーを指定してください。  
 
+### ***Request Body***
+
 ```
 {
     "events": [
@@ -2492,7 +2544,7 @@ images [
  * category [string]　: 登録/更新するイベントのカテゴリーを指定してください。  
  * color [string]　: 登録/更新するイベントの色を指定してください。  
 
----
+
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -2543,7 +2595,7 @@ images [
 * events : イベント  
  * date [string]　: イベントを削除する日付を指定してください。  
 
----
+
 ### ***Response***
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
@@ -2660,4 +2712,4 @@ images [
     * agentName [string] : 決済代行会社名。
     * publicKey [string] : 決済用ワンタイムトークンを取得するためのAPI接続用公開キー。　
 
-現在は設定できる決済方法は１つだけ、決済手段は"creditcard"のみ設定可能です。    
+現在は設定できる決済方法は１つだけ。"creditcard"のみ設定可能です。    
