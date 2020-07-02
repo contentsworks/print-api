@@ -155,7 +155,7 @@ API側では、作成ユーザーをusernameにて識別します。 トーク�
 入手したアクセストークンを使用して、各種APIにアクセスすることができます。  
 アクセストークンの指定は共通で、APIを呼び出す際に、 Authorizationリクエストヘッダにアクセストークンを指定します。  
 Authorization:に「"Bearer " + access_token」を設定します。  
-※　トークンの有効期限は、1時間です。  
+※　トークンの有効期限は、1時間です。クライアント側でトークンを保存せず、期限が切れた場合はリフレッシュトークンを利用して再取得してください。
 ※　通信する経路は全て暗号化するため、httpsを利用します。
 ```
 Authorization: Bearer tc8lOyNW1Vsqx1EwXNUML6YdFJptCLblKR_sKfU2ClkikNpK3K9mK6s
