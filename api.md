@@ -1194,7 +1194,17 @@ images [
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|成功|-|
-|406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
+|404 (Not Found)|存在しないページが指定されました。|notfound_page|
+|404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
+|406 (Not Acceptable)|編集データが存在しません|notacceptable_editkey|
+|406 (Not Acceptable)|会員の編集データが存在しません|notacceptable_editkey|
+|406 (Not Acceptable)|編集データの期限が過ぎました|notacceptable_editkey|
+|406 (Not Acceptable)|指定された編集データはすでに注文済です|notfound_editkey|
+|406 (Not Acceptable)|指定された編集データはすでに削除済です|deleted_editkey|
+|406 (Not Acceptable)|指定されたeditKeyは編集確定済みです|fixed_editkey|
+|406 (Not Acceptable)|指定された編集データは見つかりませんでした|notacceptable_editkey|
+|406 (Not Acceptable)|編集情報に問題が見つかりました。|notacceptable_editkey|
+|406 (Not Acceptable)|指定された商品データは見つかりませんでした|notacceptable_editkey|
 
 ```
 {    
