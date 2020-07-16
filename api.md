@@ -16,8 +16,8 @@ Photobook APIの開発者向けのドキュメントです。
 * [作品作成開始 作品キー取得 API](#作品作成開始-作品キー取得-api)
 
 ### 編集
-* [編集アイテム一覧取得 API](#編集アイテム一覧取得-api)
-* [編集アイテム削除 API](#編集アイテム削除-api)
+* [編集情報一覧取得 API](#編集情報一覧取得-api)
+* [編集情報削除 API](#編集情報削除-api)
 
 ### ページ
 * [ページ取得 API](#ページ取得-api)
@@ -44,7 +44,7 @@ Photobook APIの開発者向けのドキュメントです。
 * [プレビュー取得 API](#プレビュー取得-api)
 
 ### チェック
-* [編集アイテム検証 API](#編集アイテム検証-api)
+* [編集データ検証 API](#編集データ検証-api)
 
 ### カート
 * [カート 開始 API](#カート-開始-api)
@@ -391,7 +391,7 @@ HTTP ステータスコードとともに結果を返します。
 |404 (Not Found)|指定されたitemCodeが存在しない|itemcode_notexist|
 
 ---
-## 編集アイテム一覧取得 API
+## 編集情報一覧取得 API
 ### ***Method*** : GET
 ### ***Url*** : /v1/edit-items/{editKey}
 ### ***Request***
@@ -419,9 +419,9 @@ HTTP ステータスコードとともに結果を返します。
     },...
 }
 ```
-認証ユーザーが所有する編集中のアイテムのリストを返します。
-editKeyが有効期限内の編集アイテムのみ抽出します。
-editKeyを指定した場合、指定したアイテムのみ返します。
+認証ユーザーが所有する編集中作品の編集情報リストを返します。
+editKeyが有効期限内の作品のみ抽出します。
+editKeyを指定した場合、指定した作品のみ返します。
 * editKey [string]  : 編集中の作品を識別するためのキー
 * itemCode [string]  : アイテムの種類を識別するコード
 * title  [string] : 編集データにある作品のタイトル
@@ -442,7 +442,7 @@ editKeyを指定した場合、指定したアイテムのみ返します。
 |200 (OK)|成功|-|
 
 ---
-## 編集アイテム削除 API
+## 編集情報削除 API
 ### ***Method*** : POST
 ### ***Header*** : X-HTTP-Method-Override=DELETE
 ### ***Url*** : /v1/edit-items/{editKey}
@@ -1184,7 +1184,7 @@ images [
 |404 (Not Found)|存在しないエリアが指定されました。|notfound_area|
 
 ---
-## 編集アイテム検証 API
+## 編集データ検証 API
 ### ***Method*** : GET
 ### ***Url*** : /v1/{editKey}/validate/
 ### ***Request***
@@ -1575,7 +1575,7 @@ images [
         {
             "familyName" : "紺天",
             "firstName" : "津太郎",
-            "familyNameKana" : "コンテン",
+            "familyNameKana" : "コンテ��",
             "firstNameKana" : "ツタロウ",
             "zipCode" : "101-0051",
             "province" : "東京都",
