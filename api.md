@@ -1575,7 +1575,7 @@ images [
         {
             "familyName" : "紺天",
             "firstName" : "津太郎",
-            "familyNameKana" : "コンテンツ",
+            "familyNameKana" : "コンテン",
             "firstNameKana" : "ツタロウ",
             "zipCode" : "101-0051",
             "province" : "東京都",
