@@ -1539,7 +1539,7 @@ images [
     * city [string (50)] : 差出人の市区郡。
     * addressLine1 [string (50)] : 差出人の町村番地。
     * addressLine2(任意)  [string (50)]: 差出人の建物名。
-    * company(任意)  [string (25)]: 差出人の会社名。
+    * company(任意) [string (25)]: 差出人の会社名。伝票の差出人情報に表示されます。
     * telephone [string (13)] : 差出人の電話番号(ハイフンなしでもOK)。
     * email(任意)  [string (256)] : 差出人のEMailアドレス。
 
@@ -1599,7 +1599,7 @@ images [
     * city [string] : 差出人の市区郡。
     * addressLine1 [string] : 差出人の町村番地。
     * addressLine2(任意) [string] : 差出人の建物名。
-    * company(任意) [string] : 差出人の会社名。
+    * company(任意) [string] : 差出人の会社名。伝票の差出人情報に表示されます。
     * telephone [string] : 差出人の電話番号。
     * email(任意) [string (256)] : 差出人のEMailアドレス。
 
@@ -1901,7 +1901,7 @@ images [
         * city [string] : お届け先の市区郡。
         * addressLine1 [string] : お届け先の町村番地。
         * addressLine2(任意) [string] : お届け先の建物名。
-        * company(任意) [string] : お届け先の会社名。
+        * company(任意) [string] : お届け先の会社名。伝票の差出人情報に表示されます。
         * telephone [string] : お届け先の電話番号。
         * email(任意) [string] : お届け先のEMailアドレス。    
     * discountItems : 割引要素
@@ -1988,7 +1988,7 @@ images [
     * city [string (50)] : 差出人の市区郡。
     * addressLine1 [string (50)] : 差出人の町村番地。
     * addressLine2(任意)  [string (50)]: 差出人の建物名。
-    * company(任意)  [string (25)]: お差出人の会社名。
+    * company(任意)  [string (25)]: お差出人の会社名。伝票の差出人情報に表示されます。
     * telephone [string (13)] : 差出人の電話番号(ハイフンなしでもOK)。
     * email(任意)  [string (256)] : 差出人のEMailアドレス。
 
@@ -2174,7 +2174,7 @@ images [
         * city [string] : 差出人の市区郡。
         * addressLine1 [string] : 差出人の町村番地。
         * addressLine2(任意)  [string]: 差出人の建物名。
-        * company(任意)  [string]: お差出人の会社名。
+        * company(任意) [string]: お差出人の会社名。伝票の差出人情報に表示されます。伝票の差出人情報に表示されます。
         * telephone [string] : 差出人の電話番号。
         * email(任意)  [string] : 差出人のEMailアドレス。
     * discount [number] : 割引合計金額を返します。
