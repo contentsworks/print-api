@@ -823,7 +823,6 @@ editKeyを指定した場合、指定した作品のみ返します。
 | ステータスコード | 意味|エラーコード|
 |:-----------|:------------|:------------|
 |200 (OK)|成功|-|
-|400 (Bad Request)|画像を読み込めませんでした。画像が壊れているか、画像に対応しておりません。|invalid_file|
 |406 (Not Acceptable)|指定されたeditKeyが見つかりません。|notacceptable_editkey|
 |406 (Not Acceptable)|指定されたorderが不正です。|notacceptable_order|
 |404 (Not Found)|ファイルが存在しません。|notfound_file|
