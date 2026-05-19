@@ -30,6 +30,9 @@ Photobook APIの開発者向けのドキュメントです。
 * [画像アップロード API](#画像アップロード-api) ...画像のアップロードのみでエリアには配置しない
 * [アップロード済画像一覧取得 API](#アップロード済画像一覧取得-api)
 * [アップロード済画像取得 API](#アップロード済画像取得-api)
+* [画像配置情報取得 API](#画像配置情報取得-api)
+### 編集
+* [編集アイテム一覧取得 API](#編集アイテム一覧取得-api)
 * [アップロード済画像削除 API](#アップロード済画像削除-api)
 
 ### 画像配置
@@ -2371,35 +2374,3 @@ images [
     * email(任意) [string (256)] : お届け先のEMailアドレス。
 
 ---
-## 決済設定情報取得 API
-有効な決済設定情報を取得します。
-### ***Method*** : GET
-### ***Url*** : /v1/payments/{paymentType}
-### ***Request***
-* paymentType [string] (任意): 決済方法を絞り込みます。現在は「creditCard」のみ有効です。
-
-### ***Response***
-| ステータスコード | 意味|エラーコード|
-|:-----------|:------------|:------------|
-|200 (OK)|成功|-|
-
-```
-{
-    "settings" : [
-        {
-            "paymentType":"creditCard",	
-            "agentName":"PAY.JP"	
-            "publicKey":"pk_XXXXXXXXXXXXXXXXXXXXXXXXXX"	
-
-        },
-        ...
-    ]
-}
-```
-
-* settings : 決済設定情報要素(配列)
-    * paymentType [string] : 支払い方法。現在は"creditcard"のみ対応。
-    * agentName [string] : 決済代行会社名。
-    * publicKey [string] : 決済用ワンタイムトークンを取得するためのAPI接続用公開キー。　
-
-現在は設定できる決済方法は１つだけ。"creditcard"のみ設定可能です。    
