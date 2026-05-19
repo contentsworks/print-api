@@ -1248,14 +1248,14 @@ images [
 * warnings : Warningのリスト
     * areaId [string] : page内で一意となるエリアID。
     * message [string] : Warningの内容
-	
+
     |  | 内容 |
     |:-----------|:------------|
     |Warning|画像が配置されていません。|
     |Warning|テキストが入力されていません。|
     |Warning|写真サイズが不足しています。印象時に荒く見える恐れがあります。|
     |Warning|テキストが空です。(テキストが空白文字の場合に表示されます)|
-	
+
 * errors : Errorのリスト
     * areaId [string] : page内で一意となるエリアID。
     * message [string] : Errorの内容
@@ -1766,8 +1766,6 @@ images [
 }
 
 ```
-
-支払い情報は、クレジットカード番号の下4桁のみご確認いただけます。
 
 * cart
     * cartNo [string] : カートを管理するための番号です。
