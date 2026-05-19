@@ -1247,7 +1247,22 @@ images [
     * page [number] : ページの番号。
 * warnings : Warningのリスト
     * areaId [string] : page内で一意となるエリアID。
-    * message [string] : Warningの内容    
+    * message [string] : Warningの内容
+	
+    |  | 内容 |
+    |:-----------|:------------|
+    |Warning|画像が配置されていません。|
+    |Warning|テキストが入力されていません。|
+    |Warning|写真サイズが不足しています。印象時に荒く見える恐れがあります。|
+    |Warning|テキストが空です。(テキストが空白文字の場合に表示されます)|
+	
+* errors : Errorのリスト
+    * areaId [string] : page内で一意となるエリアID。
+    * message [string] : Errorの内容
+
+    |  | 内容 |
+    |:-----------|:------------|
+    |Error|使用している画像が壊れています。|
 
     |  | 内容 |
     |:-----------|:------------|
